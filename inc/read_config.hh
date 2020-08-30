@@ -1,5 +1,6 @@
 //   Reading parameters from config file
 
+#include <iostream>
 
 
 void read_config(int argc, char **argv) {
@@ -304,9 +305,11 @@ void read_config(int argc, char **argv) {
   
   if (rate == 0) {                       //Normal mode
   printf("Start with run number:\t");
-  scanf("%d", &runstart);
+  // scanf("%d", &runstart);
+  std::cin >> runstart;
   printf("Stop at run number:\t");
-  scanf("%d", &runstop);
+  // scanf("%d", &runstop);
+  std::cin >> runstop;
   }
   
   else {                                //Ratemeter mode
@@ -324,8 +327,8 @@ void read_config(int argc, char **argv) {
     
   }
   
-  fclose(stdin);
- 
+  fclose(input_file);
+
 
 }
 

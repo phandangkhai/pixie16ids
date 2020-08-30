@@ -34,7 +34,7 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], const std::string filename) {
     std::vector<XiaData*> decodedList_; /// The main object that contains all the decoded quantities.
 
     unsigned long num_spills_recvd = 0; /// The total number of good spills received from either the input file or shared memory.
-    unsigned long max_num_spill = 100000; /// Limit of number of spills to read.
+    unsigned long max_num_spill; /// Limit of number of spills to read.
     bool debug_mode = false; /// Set to true if the user wishes to display debug information.
     bool is_verbose = true; /// Set to true if the user wishes verbose information to be displayed.
 
@@ -72,6 +72,12 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], const std::string filename) {
         return -1;
     }
 
+    std::cout << "Enter the maximum number of spills to parse (type 0 to read all): ";
+    std::cin >> max_num_spill;
+    if (max_num_spill != 0)
+        std::cout << "Maximum number of spills: " << max_num_spill << std::endl;
+    else
+        std::cout << "No maximum number of spills specified, proceed to read all spills!" << std::endl;
     // Get length and rewind to read from beg
     binary_file.seekg(0, binary_file.end);
     ldf.SetLength(binary_file.tellg());
@@ -210,7 +216,7 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], const std::string filename) {
             std::cout << std::endl << std::endl;
         }
         num_spills_recvd++;
-        if (num_spills_recvd == max_num_spill) {
+        if (num_spills_recvd == max_num_spill && max_num_spill != 0) {
             if (debug_mode)
                 std::cout << "Limit of number of events to record = " << max_num_spill << " has been reached!" << std::endl;
             break;

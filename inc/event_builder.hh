@@ -157,28 +157,28 @@ void event_builder() {
             
 	}
     
-    // LRT: low resolution time
+    // // LRT: low resolution time
 
 
-    //Always take the timestamp in run_unit units
-    lrt_run = 1 + DataArray[k].time/run_unit;
-    if (lrt_run > 8192) { //Fix LRT not higher than 8192:
-      printf("\n LRT Overflow Warning: Run timestamp > 8192 - Increase the run_unit value\n");
-      lrt_run = 8191;
-    }
+    // //Always take the timestamp in run_unit units
+    // lrt_run = 1 + DataArray[k].time/run_unit;
+    // if (lrt_run > 8192) { //Fix LRT not higher than 8192:
+    //   printf("\n LRT Overflow Warning: Run timestamp > 8192 - Increase the run_unit value\n");
+    //   lrt_run = 8191;
+    // }
 
-    //Reference vs proton pulse
-    if (reftype == 0)  // we don't take the reference time
-      lrt_ref = 0;
-    else if (reftype > 0 && tref == 0)   //signals at the beginning of data for which we don't have reference information
-      lrt_ref = 8191;
-    else    //signals for which we have ref
-      lrt_ref =    (DataArray[k].time-tref)/ref_unit;
+    // //Reference vs proton pulse
+    // if (reftype == 0)  // we don't take the reference time
+    //   lrt_ref = 0;
+    // else if (reftype > 0 && tref == 0)   //signals at the beginning of data for which we don't have reference information
+    //   lrt_ref = 8191;
+    // else    //signals for which we have ref
+    //   lrt_ref =    (DataArray[k].time-tref)/ref_unit;
     
-     if (lrt_ref > 8192) { //Fix LRT not higher than 8192:
-       //printf("\n LRT Overflow Warning: Reference time > 8192 - Increase the ref_unit value\r");
-       lrt_ref = 8191;
-     } 
+    //  if (lrt_ref > 8192) { //Fix LRT not higher than 8192:
+    //    //printf("\n LRT Overflow Warning: Reference time > 8192 - Increase the ref_unit value\r");
+    //    lrt_ref = 8191;
+    //  } 
       
     
       //finished extracting information for current event

@@ -32,7 +32,6 @@ HEADERS = \
 			nutaq4ids.hh \
 			read_cal.hh \
 			read_config.hh \
-			read_grain.hh \
 			read_ldf.hh \
 			Unpacker.h \
 			write_correlations.hh \
@@ -56,7 +55,7 @@ HEADERS = \
 
 SRC_FILES = $(patsubst %.cpp, $(SRC_DIR)/%.cpp, $(SRC))
 OBJ_FILES = $(patsubst %.cpp, $(OBJ_DIR)/%.o, $(SRC))
-HEADER_FILES = $(pattsubst %, $(INC_DIR)/%, $(HEADERS))
+HEADER_FILES = $(patsubst %, $(INC_DIR)/%, $(HEADERS))
 
 all: $(TARGET)
 	@echo Everything is now built
@@ -72,6 +71,9 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp $(HEADER_FILES)
 
 run: $(TARGET)
 	$(TARGET)
+
+run_config: $(TARGET)
+	$(TARGET) config_gasp
 
 clean:
 	@rm $(OBJ_DIR) $(BIN_DIR) -R
