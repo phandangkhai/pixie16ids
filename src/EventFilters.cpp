@@ -6,16 +6,16 @@ void EventFilters::ApplyFilters(int a[MAX_NUM_MOD][MAX_NUM_CHN]) {
 	// First we copy the input tmc map.
 	memcpy(tmc, a, MAX_NUM_MOD * MAX_NUM_CHN * sizeof(int));
 	// Apply all filters to each event in the list.
-	for (int row = 0; row < MAX_NUM_MOD; ++row)
-    {
-        for (int col = 0; col < MAX_NUM_CHN; ++col)
-        {
-            std::cout << tmc[row][col] << ' ';
-        }
-        std::cout << std::endl;
-    }
 	for (int i = decodedList_.size() - 1; i >= 0; i--) {
 		decodedEvent = decodedList_[i];
+		// Update statistics info before applying filters.
+		stats[2][decodedEvent->GetModuleNumber()][decodedEvent->GetChannelNumber()]++; // total
+		if (decodedEvent->IsPileup() || decodedEvent->IsSaturated()){
+			stats[1][decodedEvent->GetModuleNumber()][decodedEvent->GetChannelNumber()]++; // fail
+			if (decodedEvent->IsPileup()) {
+				stats[0][decodedEvent->GetModuleNumber()][decodedEvent->GetChannelNumber()]++; // pileup
+			}
+		}
 		DetTypeCheck(i);
 		FlagsFilter(i);
 	}

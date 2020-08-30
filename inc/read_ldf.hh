@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <utility>
 
 #include "LDFReader.h"
 #include "XiaData.h"
@@ -33,7 +34,7 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], const std::string filename) {
     std::vector<XiaData*> decodedList_; /// The main object that contains all the decoded quantities.
 
     unsigned long num_spills_recvd = 0; /// The total number of good spills received from either the input file or shared memory.
-    unsigned long max_num_spill = 100; /// Limit of number of spills to read.
+    unsigned long max_num_spill = 100000; /// Limit of number of spills to read.
     bool debug_mode = false; /// Set to true if the user wishes to display debug information.
     bool is_verbose = true; /// Set to true if the user wishes verbose information to be displayed.
 
@@ -218,16 +219,13 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], const std::string filename) {
 
     delete[] data_;
 
-    // Printing outputs to a text file.
-
+    // Exporting decoded info to DataArray, and print a text file result.
     XiaData* decodedEvent;
     ofstream unfiltered, myfile;
     myfile.open("Parsing results.txt");
-    const int maxMod = 3, maxChan = 3;
-    // int tmc[maxChan][maxMod] = { {1, 1, 1}, {1, 1, 1}, {1, 1, 1} }; // Should be initialized from a config file.
 
-    EventFilters filters(decodedList_, debug_mode);
-  
+
+    EventFilters filters(decodedList_, debug_mode, stats);
     filters.ApplyFilters(tmc);
 
     for (int i = 0; i < decodedList_.size(); i++) {
