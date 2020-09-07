@@ -14,7 +14,7 @@ INC_FLAGS = -I $(INC_DIR)
 
 CC_FLAGS = $(INC_FLAGS) -g `root-config --cflags`
 
-LD_FLAGS = `root-config --glibs` -lzmq
+LD_FLAGS = `root-config --glibs`
 
 
 HEADERS = \

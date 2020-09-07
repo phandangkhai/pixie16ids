@@ -36,6 +36,6 @@ void EventFilters::FlagsFilter(int i) {
 	if (decodedEvent->IsPileup() || decodedEvent->IsSaturated()) {
 		if (debug_mode)
 			std::cout << "Data number: " << i << " is a pileup and/or an out-of-range." << std::endl;
-		decodedList_.erase(decodedList_.begin() + i);
+		// decodedList_.erase(decodedList_.begin() + i);
 	}
 }

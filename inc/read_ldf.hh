@@ -216,6 +216,7 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], const std::string filename) {
             std::cout << std::endl << std::endl;
         }
         num_spills_recvd++;
+        std::cout << "Number of spills recorded (and parsed): " << num_spills_recvd << " spills" << std::endl;
         if (num_spills_recvd == max_num_spill && max_num_spill != 0) {
             if (debug_mode)
                 std::cout << "Limit of number of events to record = " << max_num_spill << " has been reached!" << std::endl;

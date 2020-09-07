@@ -10,10 +10,15 @@
 #define memoryuse      50000
 
 
-//if digitizer unit time = 10ns 
-#define US 100
-#define MS 100000
-#define  S 100000000
+////if digitizer unit time = 10ns 
+//#define US 100
+//#define MS 100000
+//#define  S 100000000
+
+//if digitizer unit time = 4ns
+#define US 250
+#define MS 250000
+#define  S 250000000
 
 //correlation prompt delay and histogram range
 #define CORR_DELAY 4000
