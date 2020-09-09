@@ -240,13 +240,13 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], const std::string filename) {
         if (i != 0) {
             myfile << "\n \n";
         }
-        myfile << "Decoded event number " << i << ".\n";
-        myfile << "Event energy: " << decodedEvent->GetEnergy() << ".\n";
-        myfile << "Time stamp: " << decodedEvent->GetTime() << ".\n";
-        myfile << "Channel number: " << decodedEvent->GetChannelNumber() << ".\n";
-        myfile << "Module number: " << decodedEvent->GetModuleNumber() << ".\n";
-        myfile << "Pileup flag: " << decodedEvent->IsPileup() << ".\n";
-        myfile << "Out-of-range (saturated) flag: " << decodedEvent->IsSaturated() << ".\n";
+        // myfile << "Decoded event number " << i << ".\n";
+        // myfile << "Event energy: " << decodedEvent->GetEnergy() << ".\n";
+        // myfile << "Time stamp: " << decodedEvent->GetTime() << ".\n";
+        // myfile << "Channel number: " << decodedEvent->GetChannelNumber() << ".\n";
+        // myfile << "Module number: " << decodedEvent->GetModuleNumber() << ".\n";
+        // myfile << "Pileup flag: " << decodedEvent->IsPileup() << ".\n";
+        // myfile << "Out-of-range (saturated) flag: " << decodedEvent->IsSaturated() << ".\n";
 
         // Transfer info to DataArray to build events.
         DataArray[i].energy = decodedEvent->GetEnergy();
@@ -256,7 +256,10 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], const std::string filename) {
     }
 
     myfile.close();
-
+    for (i=0; i<decodedList_.size();i++){
+        if (decodedList_[i])
+            delete decodedList_[i];
+    }
 
     // return 0;
     return decodedList_.size();

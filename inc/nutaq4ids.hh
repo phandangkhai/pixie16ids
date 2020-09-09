@@ -7,7 +7,7 @@
 #define MAX_NUM_MOD       10
 #define MAX_CAL            4
 #define MAX_ID        0x1000
-#define memoryuse      50000
+#define memoryuse    1000000
 
 
 ////if digitizer unit time = 10ns 

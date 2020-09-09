@@ -147,14 +147,19 @@ int Unpacker::DecodeBuffer(std::vector<XiaData*>& result, unsigned int* buf, con
 
         // Trace parsing is done here if necessary!!!
         result.push_back(data);
+        // result[i++] = data;
 
-        if (read_header_mode) {
-            if (debug_mode)
-                cout << "Parsing 4 words of HEADER only, task done!" << endl;
-            return 0;
-        }
+        // if (read_header_mode) {
+        //     if (debug_mode)
+        //         cout << "Parsing 4 words of HEADER only, task done!" << endl;
+        //     return 0;
+        // }
+
+        buf += (eventLength - headerLength); // skip the rest of the event, read the next signal.
+
         // else keep going to parse trace data.
     }
+
     return 0;
 }
 
