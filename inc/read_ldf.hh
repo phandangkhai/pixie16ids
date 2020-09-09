@@ -240,21 +240,22 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], const std::string filename) {
         if (i != 0) {
             myfile << "\n \n";
         }
-        // myfile << "Decoded event number " << i << ".\n";
-        // myfile << "Event energy: " << decodedEvent->GetEnergy() << ".\n";
-        // myfile << "Time stamp: " << decodedEvent->GetTime() << ".\n";
-        // myfile << "Channel number: " << decodedEvent->GetChannelNumber() << ".\n";
-        // myfile << "Module number: " << decodedEvent->GetModuleNumber() << ".\n";
-        // myfile << "Pileup flag: " << decodedEvent->IsPileup() << ".\n";
-        // myfile << "Out-of-range (saturated) flag: " << decodedEvent->IsSaturated() << ".\n";
-        myfile << "First time stamp: " << first_ts << "\n";
-        myfile << "Last time stamp: " << last_ts << "\n";
+        myfile << "Decoded event number " << i << ".\n";
+        myfile << "Event energy: " << decodedEvent->GetEnergy() << ".\n";
+        myfile << "Time stamp: " << decodedEvent->GetTime() << ".\n";
+        myfile << "Channel number: " << decodedEvent->GetChannelNumber() << ".\n";
+        myfile << "Module number: " << decodedEvent->GetModuleNumber() << ".\n";
+        myfile << "Pileup flag: " << decodedEvent->IsPileup() << ".\n";
+        myfile << "Out-of-range (saturated) flag: " << decodedEvent->IsSaturated() << ".\n";
+
         // Transfer info to DataArray to build events.
         DataArray[i].energy = decodedEvent->GetEnergy();
         DataArray[i].time = decodedEvent->GetTime();
         DataArray[i].chnum = decodedEvent->GetChannelNumber();
         DataArray[i].modnum = decodedEvent->GetModuleNumber();
     }
+    myfile << "First time stamp: " << first_ts << "\n";
+    myfile << "Last time stamp: " << last_ts << "\n";
 
     myfile.close();
     for (i=0; i<decodedList_.size();i++){
