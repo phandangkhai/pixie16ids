@@ -247,7 +247,8 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], const std::string filename) {
         // myfile << "Module number: " << decodedEvent->GetModuleNumber() << ".\n";
         // myfile << "Pileup flag: " << decodedEvent->IsPileup() << ".\n";
         // myfile << "Out-of-range (saturated) flag: " << decodedEvent->IsSaturated() << ".\n";
-
+        myfile << "First time stamp: " << first_ts << "\n";
+        myfile << "Last time stamp: " << last_ts << "\n";
         // Transfer info to DataArray to build events.
         DataArray[i].energy = decodedEvent->GetEnergy();
         DataArray[i].time = decodedEvent->GetTime();
