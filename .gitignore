@@ -2,6 +2,8 @@
 /obj
 *.txt
 *.ldf
+test.cpp
+a.out
 Run002
 Run000
 Run003
