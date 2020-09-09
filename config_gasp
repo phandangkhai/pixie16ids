@@ -11,7 +11,7 @@ Fold       1
 
 
 |Index	|Type	|Mod	|Chan	|Delay	|Link	|Start	|Stop	|Comment
-1	1	0	1	0       0	0	0	Clov1 #1
+1	1	0	0	0       0	0	0	Clov1 #1
 2	1	0	2	0       0	0	0	Clov1 #2
 3	1	0	3	0       0	0	0	Clov1 #3
 4	1	0	4	0       0	0	0	Clov1 #4

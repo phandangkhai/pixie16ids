@@ -203,11 +203,11 @@ void read_config(int argc, char **argv) {
     //   exit(0);
     // }
     
-    if (config_coding[i][3] > MAX_NUM_CHN || config_coding[i][3] < 1 ) {
-      printf("ERROR: In configuration file '%s': Channel number must be between 1 and %d.\n", argv[1], MAX_NUM_CHN);
-      printf("       ----> Coding Line %d: CHAN = %d\n", i, config_coding[i][3]);
-      exit(0);
-    }
+    //if (config_coding[i][3] > MAX_NUM_CHN || config_coding[i][3] < 1 ) {
+      //printf("ERROR: In configuration file '%s': Channel number must be between 1 and %d.\n", argv[1], MAX_NUM_CHN);
+      //printf("       ----> Coding Line %d: CHAN = %d\n", i, config_coding[i][3]);
+      //exit(0);
+    //}
     
     if (i>0 && 
         config_coding[i-1][1] == config_coding[i][1] && 
