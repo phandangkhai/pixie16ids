@@ -161,12 +161,12 @@ int main(int argc, char **argv)
 
                 sprintf(filename, "%s%d_%d", runname, runnumber, runpart);
 
-                fp_in = fopen(filename, "rb");
-                if (!fp_in)
-                {
-                    fprintf(stderr, "Unable to open %s - %m\n", filename);
-                    break;
-                }
+                //fp_in = fopen(filename, "rb");
+                //if (!fp_in)
+                //{
+                    //fprintf(stderr, "Unable to open %s - %m\n", filename);
+                    //break;
+                //}
 
                 // Begin to parse ldf fielname.
                 // iData is now the last data index.
