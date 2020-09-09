@@ -183,8 +183,8 @@ int main(int argc, char **argv)
                 MergeSort(DataArray, TempArray, 0, iData);
 
                 // Extract first and last time stamps for statistics.
-                first_ts = DataArray[0].time;
-                last_ts = DataArray[iData-1].time;
+                first_ts = DataArray[1].time;
+                last_ts = DataArray[iData].time;
 
                 //Looking for correlations
                 if (corr > 0)
@@ -231,6 +231,8 @@ int main(int argc, char **argv)
 
                 printf("\n");
                 current_block = 0;
+                std::cout << "First time stamp: " << first_ts << std::endl;
+                std::cout << "Last time stamp: " << last_ts << std::endl;
             }
 
         //Printing statistics for each run if not in correlation mode

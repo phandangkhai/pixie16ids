@@ -254,8 +254,6 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], const std::string filename) {
         DataArray[i].chnum = decodedEvent->GetChannelNumber();
         DataArray[i].modnum = decodedEvent->GetModuleNumber();
     }
-    myfile << "First time stamp: " << first_ts << "\n";
-    myfile << "Last time stamp: " << last_ts << "\n";
 
     myfile.close();
     for (i=0; i<decodedList_.size();i++){
