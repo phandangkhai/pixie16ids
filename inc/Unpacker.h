@@ -17,7 +17,7 @@ public:
 		InitializeMaskMap(); }
 
 	bool ReadSpill(std::vector<XiaData*>& decodedList, unsigned int* data, unsigned int nWords, bool is_verbose, bool& debug_mode);
-	int DecodeBuffer(std::vector<XiaData*>& result, unsigned int* buf, const unsigned int& vsn, bool& debug_mode);
+	int DecodeBuffer(std::vector<XiaData*>& result, unsigned int* buf, const unsigned int& vsn, unsigned int& lenRec, bool& debug_mode);
 	std::pair<unsigned int, unsigned int> DecodeWordZero(const unsigned int& word, XiaData& data,
 		const XiaListModeDataMask& mask);
 	void DecodeWordTwo(const unsigned int& word, XiaData& data, const XiaListModeDataMask& mask);

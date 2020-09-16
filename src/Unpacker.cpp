@@ -63,15 +63,14 @@ bool Unpacker::ReadSpill(std::vector<XiaData*>& decodedList, unsigned int* data,
 
             // Decode the buffer, pass the buffer only from the first non-delimiter.
             // In this context, buffer means the unit of data that stores the spill (not 8092 bytes unit).
-            retval = DecodeBuffer(decodedList, &data[nWords_read], vsn, debug_mode);
-            return true;
+            retval = DecodeBuffer(decodedList, &data[nWords_read], vsn, lenRec, debug_mode);
+            nWords_read += lenRec;
         }
-        else return false;
     }
     return true;
 }
 
-int Unpacker::DecodeBuffer(std::vector<XiaData*>& result, unsigned int* buf, const unsigned int& vsn, bool& debug_mode) {
+int Unpacker::DecodeBuffer(std::vector<XiaData*>& result, unsigned int* buf, const unsigned int& vsn, unsigned int& lenRec, bool& debug_mode) {
     XiaListModeDataMask mask_; ///< Object providing the masks necessary to decode the spill data.
 
     if (debug_mode)
@@ -153,7 +152,7 @@ int Unpacker::DecodeBuffer(std::vector<XiaData*>& result, unsigned int* buf, con
         // }
 
         buf += (eventLength - headerLength); // skip the rest of the event, read the next signal.
-
+        break;
         // else keep going to parse trace data.
     }
 
