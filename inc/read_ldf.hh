@@ -35,7 +35,7 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], const std::string filename) {
 
     unsigned long num_spills_recvd = 0; /// The total number of good spills received from either the input file or shared memory.
     unsigned long max_num_spill; /// Limit of number of spills to read.
-    bool debug_mode = false; /// Set to true if the user wishes to display debug information.
+    bool debug_mode = true; /// Set to true if the user wishes to display debug information.
     bool is_verbose = true; /// Set to true if the user wishes verbose information to be displayed.
 
     // variables for reading dir buffer
@@ -242,7 +242,7 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], const std::string filename) {
         }
         myfile << "Decoded event number " << i << ".\n";
         myfile << "Event energy: " << decodedEvent->GetEnergy() << ".\n";
-        myfile << "Time stamp: " << decodedEvent->GetTime() << ".\n";
+        myfile << "Time stamp: " << std::fixed << decodedEvent->GetTime() << ".\n";
         myfile << "Channel number: " << decodedEvent->GetChannelNumber() << ".\n";
         myfile << "Module number: " << decodedEvent->GetModuleNumber() << ".\n";
         myfile << "Pileup flag: " << decodedEvent->IsPileup() << ".\n";

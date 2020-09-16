@@ -55,7 +55,7 @@ int main(int argc, char **argv)
 
     read_config(argc, argv);
 
-    // read_cal(argc, argv);
+    read_cal(argc, argv);
 
     //Allocating memory
     DataArray = (struct data *)calloc(memoryuse + 10000, sizeof(struct data));

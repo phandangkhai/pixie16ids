@@ -28,14 +28,15 @@ void EventFilters::DetTypeCheck(int i) {
 			std::cout << "Module number: " << decodedEvent->GetModuleNumber() << "; Channel Number: " << decodedEvent->GetChannelNumber();
 			std::cout << "Dectector type: " << tmc[decodedEvent->GetModuleNumber()][decodedEvent->GetChannelNumber()] << std::endl;
 		}
-		decodedList_.erase(decodedList_.begin() + i);
+		//decodedList_.erase(decodedList_.begin() + i);
 	}
 }
 
 void EventFilters::FlagsFilter(int i) {
 	if (decodedEvent->IsPileup() || decodedEvent->IsSaturated()) {
 		if (debug_mode)
-			std::cout << "Data number: " << i << " is a pileup and/or an out-of-range." << std::endl;
-		// decodedList_.erase(decodedList_.begin() + i);
+			//std::cout << "Data number: " << i << " is a pileup and/or an out-of-range." << std::endl;
+		//decodedList_.erase(decodedList_.begin() + i);
+		;
 	}
 }

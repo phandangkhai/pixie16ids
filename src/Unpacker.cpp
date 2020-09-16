@@ -114,8 +114,8 @@ int Unpacker::DecodeBuffer(std::vector<XiaData*>& result, unsigned int* buf, con
         unsigned int traceLength = DecodeWordThree(buf[3], *data, mask_);
 
         // Reset energy to 0 in case of pileup or out-of-range.
-        if (data->IsSaturated() || data->IsPileup())
-            data->SetEnergy(0);
+        //if (data->IsSaturated() || data->IsPileup())
+            //data->SetEnergy(0);
 
         // Calculate time stamp.
         pair<double, double> times = CalculateTimeInSamples(mask_, *data);
@@ -136,11 +136,8 @@ int Unpacker::DecodeBuffer(std::vector<XiaData*>& result, unsigned int* buf, con
         }
         else {//Advance the buffer past the header and to the trace
             if (debug_mode) {
-                cout << "Decoded 4 words of HEADER" << endl;
-                cerr << "Sanity check passed: trace-header-event lengths are compatible!" << endl;
-                cout << "Trace length = " << traceLength << endl;
-                cout << "Header length = " << headerLength << endl;
-                cout << "Event length = " << eventLength << endl;
+                //cout << "Decoded 4 words of HEADER" << endl;
+                //cerr << "Sanity check passed: trace-header-event lengths are compatible!" << endl;
             }
             buf += headerLength;
         }
@@ -218,6 +215,7 @@ unsigned int Unpacker::DecodeWordThree(const unsigned int& word, XiaData& data,
 
 void Unpacker::InitializeMaskMap() {
     maskMap_.insert(make_pair(0, make_pair("42950", 250)));
+    maskMap_.insert(make_pair(1, make_pair("42950", 250)));
 }
 
 pair<double, double> Unpacker::CalculateTimeInSamples(const XiaListModeDataMask& mask,

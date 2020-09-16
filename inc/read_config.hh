@@ -33,7 +33,7 @@ void read_config(int argc, char **argv) {
   else if ( strncmp(ref_string, "ms", 2) == 0 )  ref_unit = ref_unit*MS;
   else if ( strncmp(ref_string,  "s", 1) == 0 )  ref_unit = ref_unit*S;
   else if ( strncmp(ref_string, "ns", 2) == 0 )  {
-    ref_unit = ref_unit/10;
+    ref_unit = ref_unit/4;
     if (ref_unit < 1) {
       printf("ERROR: <ref_unit> from '%s' cannot be less than '10 ns'.\n", argv[1]);
       exit(0);
@@ -266,15 +266,15 @@ void read_config(int argc, char **argv) {
     
   }
   
-  if (dettypes == 0 || modules == 0 || dettypes > 30 || modules > 10) {
-    printf("ERROR: In configuration file '%s'. Dettypes=%d, Modules=%d\n", argv[1], dettypes, modules);
-    exit(0);
-  }
+  //if (dettypes == 0 || modules == 0 || dettypes > 30 || modules > 10) {
+    //printf("ERROR: In configuration file '%s'. Dettypes=%d, Modules=%d\n", argv[1], dettypes, modules);
+    //exit(0);
+  //}
   
-  else {
-    printf ("  - %d configuration coding lines\n", detnum);
-    printf ("  - %d detector types\n",             dettypes);
-  }
+  //else {
+    //printf ("  - %d configuration coding lines\n", detnum);
+    //printf ("  - %d detector types\n",             dettypes);
+  //}
   
 
   
