@@ -28,8 +28,8 @@ bool Unpacker::ReadSpill(std::vector<XiaData*>& decodedList, unsigned int* data,
         lenRec = data[nWords_read]; // Number of words in this record
         vsn = data[nWords_read + 1]; // Module number
         if (debug_mode) {
-            std::cout << "Record length: " << lenRec << std::endl;
-            std::cout << "Module number (vsn): " << vsn << std::endl;
+            std::cout << "\nRecord length: " << lenRec << std::endl;
+            std::cout << "Module number (vsn): " << vsn << "\n\n";
         }
 
         //// Check sanity of record length and vsn
@@ -69,17 +69,22 @@ bool Unpacker::ReadSpill(std::vector<XiaData*>& decodedList, unsigned int* data,
             nWords_read += lenRec;
         }
         else if (vsn == 9999) {
-			std::cout << "vsn = 9999, so it's the end of spill." << std::endl;
+			if (debug_mode)
+				std::cout << "vsn = 9999, close this ReadSpill loop." << std::endl;
 			break;
 		}
-		if (vsn == 9999 || vsn == 1000) {
-			fullSpill = true;
-			nWords_read += 2; //skip the vsn and lenRec words.
-			lastVsn = 0xFFFFFFFF;
-		}
+    }
+    if (vsn == 9999 || vsn == 1000) {
+		fullSpill = true;
+		nWords_read += 2; //skip the vsn and lenRec words.
+		lastVsn = 0xFFFFFFFF;
+	}
+	if (debug_mode) {
 		if (nWords_read != nWords)
 			std::cout << "ReadSpill: Received spill of " << nWords << " words, but read " << nWords_read << " words\n";
-    }
+		else
+			std::cout << "All words in this spill are read!\n";
+		}
     return true;
 }
 
@@ -87,7 +92,7 @@ int Unpacker::DecodeBuffer(std::vector<XiaData*>& result, unsigned int* buf, con
     XiaListModeDataMask mask_; ///< Object providing the masks necessary to decode the spill data.
 
     if (debug_mode)
-        std::cout << "Checking vsn, vsn = " << vsn << std::endl;
+        std::cout << "\nChecking vsn, vsn = " << vsn << std::endl;
     // Using the defined map from vsn to (firmware, frequency), set firmware and frequency to the mask object.
     if (maskMap_.size() != 0) {
         auto found = maskMap_.find(vsn);
@@ -97,7 +102,7 @@ int Unpacker::DecodeBuffer(std::vector<XiaData*>& result, unsigned int* buf, con
         mask_.SetFirmware((*found).second.first);
         mask_.SetFrequency((*found).second.second);
         if (debug_mode)
-            std::cout << "Both firmware and frequency are set!" << std::endl;
+            std::cout << "Both firmware and frequency are set!\n\n";
     }
     else
         std::cout << "Mask map is empty!" << std::endl;
@@ -108,8 +113,7 @@ int Unpacker::DecodeBuffer(std::vector<XiaData*>& result, unsigned int* buf, con
     /// of the module (module number).
     unsigned int bufLen = *buf++;
     unsigned int modNum = *buf++;
-    std::cout << "Buffer (unit of spill data) length is " << bufLen << std::endl;
-    std::cout << "Module number of this data signal (event) is " << modNum << std::endl;
+
     bool read_header_mode = true; //if this is true, we only parse first 4 words.
     while (buf < bufStart + bufLen) {
         XiaData* data = new XiaData();

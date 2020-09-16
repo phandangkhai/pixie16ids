@@ -191,7 +191,7 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], const std::string filename) {
 
         if (full_spill) {
             if (debug_mode) {
-                std::cout << std::endl << "full spill is true!" << std::endl;
+                std::cout << std::endl << "\nSpill is full" << std::endl;
                 std::cout << "debug: Retrieved spill of " << nBytes << " bytes (" << nBytes / 4 << " words)\n";
                 std::cout << "debug: Read up to word number " << binary_file.tellg() / 4 << " in input file\n";
             }
