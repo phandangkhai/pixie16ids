@@ -31,6 +31,7 @@ bool Unpacker::ReadSpill(std::vector<XiaData*>& decodedList, unsigned int* data,
             std::cout << "Record length: " << lenRec << std::endl;
             std::cout << "Module number (vsn): " << vsn << std::endl;
         }
+
         //// Check sanity of record length and vsn
         //if (lenRec > maxWords || (vsn > maxVsn && vsn != 9999 && vsn != 1000)) {
         //    if (is_verbose)
@@ -64,8 +65,20 @@ bool Unpacker::ReadSpill(std::vector<XiaData*>& decodedList, unsigned int* data,
             // Decode the buffer, pass the buffer only from the first non-delimiter.
             // In this context, buffer means the unit of data that stores the spill (not 8092 bytes unit).
             retval = DecodeBuffer(decodedList, &data[nWords_read], vsn, lenRec, debug_mode);
+            lastVsn = vsn;
             nWords_read += lenRec;
         }
+        else if (vsn == 9999) {
+			std::cout << "vsn = 9999, so it's the end of spill." << std::endl;
+			break;
+		}
+		if (vsn == 9999 || vsn == 1000) {
+			fullSpill = true;
+			nWords_read += 2; //skip the vsn and lenRec words.
+			lastVsn = 0xFFFFFFFF;
+		}
+		if (nWords_read != nWords)
+			std::cout << "ReadSpill: Received spill of " << nWords << " words, but read " << nWords_read << " words\n";
     }
     return true;
 }
@@ -152,7 +165,7 @@ int Unpacker::DecodeBuffer(std::vector<XiaData*>& result, unsigned int* buf, con
         // }
 
         buf += (eventLength - headerLength); // skip the rest of the event, read the next signal.
-        break;
+
         // else keep going to parse trace data.
     }
 
