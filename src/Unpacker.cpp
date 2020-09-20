@@ -236,6 +236,7 @@ unsigned int Unpacker::DecodeWordThree(const unsigned int& word, XiaData& data,
 
 void Unpacker::InitializeMaskMap() {
     maskMap_.insert(make_pair(0, make_pair("42950", 250)));
+    maskMap_.insert(make_pair(1, make_pair("42950", 250)));
 }
 
 pair<double, double> Unpacker::CalculateTimeInSamples(const XiaListModeDataMask& mask,
