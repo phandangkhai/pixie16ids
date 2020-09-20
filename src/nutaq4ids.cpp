@@ -178,16 +178,15 @@ int main(int argc, char **argv)
                 LDF_file ldf(filename);
                 DATA_buffer data;
                 int ldf_pos_index = 0;
+                bool first_cycle = true;
 
                 // Start of a cycle:
                 while (true) {
                 // Begin to parse ldf fielname.
                 // iData is now the last data index.
                     iData = read_ldf(tmc, ldf, data, ldf_pos_index, iData);
-                    if (data.GetRetval() == 2) {
-                        break; // We only break this loop after the entire file is read and parsed.
-                    }
-                }
+
+                //}
                 // Writing statistics
                 if (stat == 1)
                 {
@@ -199,8 +198,11 @@ int main(int argc, char **argv)
                 MergeSort(DataArray, TempArray, 0, iData);
 
                 // Extract first and last time stamps for statistics.
-                first_ts = DataArray[1].time;
-                last_ts = DataArray[iData].time;
+                if (first_cycle) {
+                    first_ts = DataArray[1].time;
+                    first_cycle = false;
+                }
+
 
                 //Looking for correlations
                 if (corr > 0)
@@ -249,6 +251,11 @@ int main(int argc, char **argv)
                 current_block = 0;
                 std::cout << "First time stamp: " << first_ts << std::endl;
                 std::cout << "Last time stamp: " << last_ts << std::endl;
+                if (data.GetRetval() == 2) {
+                    last_ts = DataArray[iData].time;
+                    break; // We only break this loop after the entire file is read and parsed.
+                }
+            }                
             }
 
         //Printing statistics for each run if not in correlation mode
