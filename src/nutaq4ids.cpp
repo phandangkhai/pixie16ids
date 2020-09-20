@@ -180,11 +180,14 @@ int main(int argc, char **argv)
                 int ldf_pos_index = 0;
 
                 // Start of a cycle:
-                for (int i = 0; i < 3; i++) {
+                while (true) {
                 // Begin to parse ldf fielname.
                 // iData is now the last data index.
                     iData = read_ldf(tmc, ldf, data, ldf_pos_index, iData);
-                    std::cout << "RETVAL is " << data.GetRetval() << std::endl;
+                    if (data.GetRetval() == 2) {
+                        std::cout << "Retval says 2, quit main loop!\n\n";
+                        break;
+                    }
                 }
                 // Writing statistics
                 if (stat == 1)
