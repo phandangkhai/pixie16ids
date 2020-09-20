@@ -49,7 +49,6 @@ bool DATA_buffer::read_next_buffer(std::ifstream* f_, bool force_) {
         std::cout << "file is bad, or it's eof" << std::endl;
         return false; 
     }
-    std::cout << "buff pos = " << buff_pos << std::endl;
     // First data buffer, just read like normal
     if (bcount == 0) {
         f_->read((char*)buffer_even, ACTUAL_BUFF_SIZE * 4);
@@ -57,7 +56,6 @@ bool DATA_buffer::read_next_buffer(std::ifstream* f_, bool force_) {
 
     // Not beginning of data buffer, check if not end of buffer
     else if (buff_pos + 3 <= ACTUAL_BUFF_SIZE - 1 && !force_) {
-        std::cout << "buff poss says almost the end!\n";
         // Don't need to scan a new buffer yet, this buffer hasn't reached the end.
 
         // Skip end of event delimiters

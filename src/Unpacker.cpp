@@ -19,7 +19,6 @@ bool Unpacker::ReadSpill(std::vector<XiaData*>& decodedList, unsigned int* data,
     // While the current location in the buffer has not gone beyond the end
     // of the buffer (ignoring the last three delimiters, continue reading
     while (nWords_read <= nWords) {
-        std::cout << "\n\nIn While(nWords_read <= nWords)!!!\n\n";
         // First we need to skip the delimiter.
         while (data[nWords_read] == 0xFFFFFFFF)
             nWords_read++;
