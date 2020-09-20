@@ -24,18 +24,18 @@
 #define ACTUAL_BUFF_SIZE 8194
 
 
-int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], const std::string filename) {
+int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], LDF_file& ldf, DATA_buffer& data, int& pos_index, int iData) {
     DIR_buffer dir;
     HEAD_buffer head;
-    DATA_buffer data;
+    // DATA_buffer data;
 
-    LDF_file ldf(filename);
+    // LDF_file ldf(filename);
 
     std::vector<XiaData*> decodedList_; /// The main object that contains all the decoded quantities.
 
     unsigned long num_spills_recvd = 0; /// The total number of good spills received from either the input file or shared memory.
     unsigned long max_num_spill; /// Limit of number of spills to read.
-    bool debug_mode = false; /// Set to true if the user wishes to display debug information.
+    bool debug_mode = true; /// Set to true if the user wishes to display debug information.
     bool is_verbose = true; /// Set to true if the user wishes verbose information to be displayed.
 
     // variables for reading dir buffer
@@ -141,11 +141,21 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], const std::string filename) {
 
 
     // Start read ldf DATA buffers
-    binary_file.seekg(65552, binary_file.beg); //10010 (hex) offset of DATA buffer type
+    if (pos_index == 0)
+    {
+        binary_file.seekg(65552, binary_file.beg); //10010 (hex) offset of DATA buffer type
+    }
+    else
+    {
+        binary_file.seekg(pos_index, binary_file.beg); // resume reading the following spills
+    }
+    
 
-    data.Reset();
+    // data.Reset();
 
+    std::cout << "Reading cycle index (begin) is at: " << binary_file.tellg() << std::endl;
     while (true) {
+        std::cout << "Index at the beginning without escaping loop: " << binary_file.tellg() << std::endl;
         if (!data.Read(&binary_file, (char*)data_, nBytes, 1000000, full_spill, bad_spill, debug_mode)) {
             if (data.GetRetval() == 1) {
                 if (debug_mode) {
@@ -199,6 +209,7 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], const std::string filename) {
                 if (debug_mode)
                     std::cout << "Spill is full and good!" << std::endl;
                 unpacker_.ReadSpill(decodedList_, data_, nBytes / 4, is_verbose, debug_mode);
+
                 //IdleTask();
                 if (debug_mode)
                     std::cout << std::endl << std::endl;
@@ -216,13 +227,23 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], const std::string filename) {
             std::cout << std::endl << std::endl;
         }
         num_spills_recvd++;
+        pos_index = binary_file.tellg();
         std::cout << "Number of spills recorded (and parsed): " << num_spills_recvd << " spills" << std::endl;
         if (num_spills_recvd == max_num_spill && max_num_spill != 0) {
-            if (debug_mode)
+            // if (debug_mode)
                 std::cout << "Limit of number of events to record = " << max_num_spill << " has been reached!" << std::endl;
+            pos_index = binary_file.tellg();
+            // pos_index -= ACTUAL_BUFF_SIZE*4;
             break;
         }
+        else
+        {
+            std::cout << "Index at the end escaping loop: " << binary_file.tellg() << std::endl;
+        }
+        
     }
+
+    std::cout << "Reading cycle index is at (end): " << pos_index << std::endl;
 
     delete[] data_;
 
@@ -249,10 +270,11 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], const std::string filename) {
         myfile << "Out-of-range (saturated) flag: " << decodedEvent->IsSaturated() << ".\n";
 
         // Transfer info to DataArray to build events.
-        DataArray[i].energy = decodedEvent->GetEnergy();
-        DataArray[i].time = decodedEvent->GetTime();
-        DataArray[i].chnum = decodedEvent->GetChannelNumber();
-        DataArray[i].modnum = decodedEvent->GetModuleNumber();
+        DataArray[i+iData].energy = decodedEvent->GetEnergy();
+        DataArray[i+iData].time = decodedEvent->GetTime();
+        DataArray[i+iData].chnum = decodedEvent->GetChannelNumber();
+        DataArray[i+iData].modnum = decodedEvent->GetModuleNumber();
+        // std::cout << "Data index written: " << i+iData << std::endl;
     }
 
     myfile.close();
@@ -261,6 +283,6 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], const std::string filename) {
             delete decodedList_[i];
     }
 
-    // return 0;
-    return decodedList_.size();
+    binary_file.close();
+    return decodedList_.size()+iData;
 }

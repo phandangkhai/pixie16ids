@@ -49,14 +49,22 @@ bool DATA_buffer::read_next_buffer(std::ifstream* f_, bool force_) {
         std::cout << "file is bad, or it's eof" << std::endl;
         return false; 
     }
-
+    std::cout << "buff pos = " << buff_pos << std::endl;
     // First data buffer, just read like normal
     if (bcount == 0) {
+        std::cout << "\nfirst buffer (spill chunk)!\n\n";
+        std::cout << "Index position of f_ in read_next_buffer: " << f_->tellg() << std::endl;
         f_->read((char*)buffer_even, ACTUAL_BUFF_SIZE * 4);
+        // f_->read((char*)buff_test, ACTUAL_BUFF_SIZE * 4);
+        // std::cout << "debug: scanning spill chunk (TEST BUFF 2) " << buff_test[4]
+        //         << " of " << buff_test[3] << "\n";
+        std::cout << "debug: scanning spill chunk (EVEN BUFFER) " << buffer_even[4]
+                << " of " << buffer_even[3] << "\n";
     }
 
-    // Not first data buffer, check if not end of buffer
+    // Not beginning of data buffer, check if not end of buffer
     else if (buff_pos + 3 <= ACTUAL_BUFF_SIZE - 1 && !force_) {
+        std::cout << "buff poss says almost the end!\n";
         // Don't need to scan a new buffer yet, this buffer hasn't reached the end.
 
         // Skip end of event delimiters
@@ -67,17 +75,28 @@ bool DATA_buffer::read_next_buffer(std::ifstream* f_, bool force_) {
 
         // If we have more good words in this buffer, keep reading it.
         if (buff_pos + 3 < ACTUAL_BUFF_SIZE - 1) {
+            std::cout << "buff pos now = " << buff_pos << ", returning true\n";
             return true;
+        }
+        else
+        {
+            std::cout << "NOT returning!\n";
         }
     }
 
     // Read the buffer into memory.
     if (bcount % 2 == 0) {
+        std::cout << "\nbcount even!\n";
         f_->read((char*)buffer_odd, ACTUAL_BUFF_SIZE * 4); // read and store in advance, then give to curr_buffer in next loop
         curr_buffer = buffer_even;
+        std::cout << "debug: scanning spill chunk (BUFFER EVEN in BCOUNT) " << buffer_even[4]
+                << " of " << buffer_even[3] << "\n";
+        std::cout << "debug: scanning spill chunk (BCOUNT) " << curr_buffer[4]
+                << " of " << curr_buffer[3] << "\n";
         next_buffer = buffer_odd;
     }
     else {
+        std::cout << "\nbcount odd!\n";
         f_->read((char*)buffer_even, ACTUAL_BUFF_SIZE * 4); // read and store in advance, then give to curr_buffer in next loop
         curr_buffer = buffer_odd;
         next_buffer = buffer_even;
@@ -137,6 +156,7 @@ bool DATA_buffer::Read(std::ifstream* file_, char* data_, unsigned int& nBytes,
             if (debug_mode) {
                 std::cout << "debug: scanning spill chunk " << current_chunk_num
                     << " of " << total_num_chunks << "\n";
+                std::cout << "buff pos (1) = " << buff_pos << std::endl;
             }
 
             /// Capture all possible issues related to bad/missing chunks.
@@ -272,6 +292,8 @@ bool DATA_buffer::Read(std::ifstream* file_, char* data_, unsigned int& nBytes,
                         copied_bytes);
                 nBytes += copied_bytes;
                 buff_pos += copied_bytes / 4; /// unit of words
+                std::cout << "this chunk size (2) = " << this_chunk_sizeB << std::endl;
+                std::cout << "buff pos (2) = " << buff_pos << std::endl;
             }
         }
         // If buff_head is not DATA, check if it is EOF

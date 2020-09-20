@@ -58,7 +58,7 @@ private:
 
     unsigned int buffer_even[ACTUAL_BUFF_SIZE]; /// Container for even ldf buffer.
     unsigned int buffer_odd[ACTUAL_BUFF_SIZE]; /// Container for odd ldf buffer.
-
+ 
     unsigned int* curr_buffer; /// Pointer to the current ldf buffer.
     unsigned int* next_buffer; /// Pointer to the next ldf buffer.
 

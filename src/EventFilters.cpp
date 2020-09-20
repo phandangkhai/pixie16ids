@@ -23,19 +23,19 @@ void EventFilters::ApplyFilters(int a[MAX_NUM_MOD][MAX_NUM_CHN]) {
 
 void EventFilters::DetTypeCheck(int i) {
 	if (tmc[decodedEvent->GetModuleNumber()][decodedEvent->GetChannelNumber()] == 0) {
-		if(debug_mode) {
-			std::cout << "Data number: " << i << " has undefined detector type (0)." << std::endl;
-			std::cout << "Module number: " << decodedEvent->GetModuleNumber() << "; Channel Number: " << decodedEvent->GetChannelNumber();
-			std::cout << "Dectector type: " << tmc[decodedEvent->GetModuleNumber()][decodedEvent->GetChannelNumber()] << std::endl;
-		}
+		// if(debug_mode) {
+		// 	std::cout << "Data number: " << i << " has undefined detector type (0)." << std::endl;
+		// 	std::cout << "Module number: " << decodedEvent->GetModuleNumber() << "; Channel Number: " << decodedEvent->GetChannelNumber();
+		// 	std::cout << "Dectector type: " << tmc[decodedEvent->GetModuleNumber()][decodedEvent->GetChannelNumber()] << std::endl;
+		// }
 		decodedList_.erase(decodedList_.begin() + i);
 	}
 }
 
 void EventFilters::FlagsFilter(int i) {
 	if (decodedEvent->IsPileup() || decodedEvent->IsSaturated()) {
-		if (debug_mode)
-			std::cout << "Data number: " << i << " is a pileup and/or an out-of-range." << std::endl;
+		// if (debug_mode)
+		// 	std::cout << "Data number: " << i << " is a pileup and/or an out-of-range." << std::endl;
 		// decodedList_.erase(decodedList_.begin() + i);
 	}
 }

@@ -19,7 +19,7 @@ bool Unpacker::ReadSpill(std::vector<XiaData*>& decodedList, unsigned int* data,
     // While the current location in the buffer has not gone beyond the end
     // of the buffer (ignoring the last three delimiters, continue reading
     while (nWords_read <= nWords) {
-
+        std::cout << "\n\nIn While(nWords_read <= nWords)!!!\n\n";
         // First we need to skip the delimiter.
         while (data[nWords_read] == 0xFFFFFFFF)
             nWords_read++;
@@ -64,10 +64,26 @@ bool Unpacker::ReadSpill(std::vector<XiaData*>& decodedList, unsigned int* data,
             // Decode the buffer, pass the buffer only from the first non-delimiter.
             // In this context, buffer means the unit of data that stores the spill (not 8092 bytes unit).
             retval = DecodeBuffer(decodedList, &data[nWords_read], vsn, debug_mode);
-            return true;
+            lastVsn = vsn;
+            nWords_read += lenRec;
         }
-        else return false;
+        else if (vsn == 9999) {
+			if (debug_mode)
+				std::cout << "vsn = 9999, close this ReadSpill loop." << std::endl;
+			break;
+		}
     }
+    if (vsn == 9999 || vsn == 1000) {
+		fullSpill = true;
+		nWords_read += 2; //skip the vsn and lenRec words.
+		lastVsn = 0xFFFFFFFF;
+	}
+	if (debug_mode) {
+		if (nWords_read != nWords)
+			std::cout << "ReadSpill: Received spill of " << nWords << " words, but read " << nWords_read << " words\n";
+		else
+			std::cout << "All words in this spill are read!\n";
+		}
     return true;
 }
 
@@ -96,8 +112,10 @@ int Unpacker::DecodeBuffer(std::vector<XiaData*>& result, unsigned int* buf, con
     /// of the module (module number).
     unsigned int bufLen = *buf++;
     unsigned int modNum = *buf++;
-    std::cout << "Buffer (unit of spill data) length is " << bufLen << std::endl;
-    std::cout << "Module number of this data signal (event) is " << modNum << std::endl;
+    if (debug_mode){
+        std::cout << "Buffer (unit of spill data) length is " << bufLen << std::endl;
+        std::cout << "Module number of this data signal (event) is " << modNum << std::endl;
+    }
     bool read_header_mode = true; //if this is true, we only parse first 4 words.
     while (buf < bufStart + bufLen) {
         XiaData* data = new XiaData();
@@ -135,13 +153,13 @@ int Unpacker::DecodeBuffer(std::vector<XiaData*>& result, unsigned int* buf, con
             return -1;
         }
         else {//Advance the buffer past the header and to the trace
-            if (debug_mode) {
-                cout << "Decoded 4 words of HEADER" << endl;
-                cerr << "Sanity check passed: trace-header-event lengths are compatible!" << endl;
-                cout << "Trace length = " << traceLength << endl;
-                cout << "Header length = " << headerLength << endl;
-                cout << "Event length = " << eventLength << endl;
-            }
+            // if (debug_mode) {
+            //     cout << "Decoded 4 words of HEADER" << endl;
+            //     cerr << "Sanity check passed: trace-header-event lengths are compatible!" << endl;
+            //     cout << "Trace length = " << traceLength << endl;
+            //     cout << "Header length = " << headerLength << endl;
+            //     cout << "Event length = " << eventLength << endl;
+            // }
             buf += headerLength;
         }
 

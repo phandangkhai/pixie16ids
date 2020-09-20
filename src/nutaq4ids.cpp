@@ -61,6 +61,7 @@ int main(int argc, char **argv)
     DataArray = (struct data *)calloc(memoryuse + 10000, sizeof(struct data));
     TempArray = (struct data *)calloc(memoryuse + 10000, sizeof(struct data));
 
+
     if (root == 1)
         TEventArray = (struct TEvent *)calloc(memoryuse + 10000, sizeof(struct TEvent));
 
@@ -132,16 +133,22 @@ int main(int argc, char **argv)
                 exit(0);
             }
 
+            //Binary file object
+            LDF_file ldf(filename);
+            DATA_buffer data;
+            int ldf_pos_index = 0;
+
+
             start_clock = (double)clock();
 
             // iData = 0, iEvt = 0;
             // read_grain();
-            iData = read_ldf(tmc, filename);
+            iData = read_ldf(tmc, ldf, data, ldf_pos_index, iData);
             printf("Everything is ok, now ldf file is read!\n");
 
             // First and last time stamps for statistics.
-            first_ts = DataArray[0].time;
-            last_ts = DataArray[iData-1].time;
+            first_ts = DataArray[1].time;
+            last_ts = DataArray[iData].time;
 
             if (root == 1)
             {
@@ -156,7 +163,6 @@ int main(int argc, char **argv)
         else
             for (runpart = 0; runpart < 1; runpart++)
             {
-
                 start_clock = (double)clock();
 
                 sprintf(filename, "%s%d_%d", runname, runnumber, runpart);
@@ -168,10 +174,18 @@ int main(int argc, char **argv)
                     //break;
                 //}
 
+                //Binary file object
+                LDF_file ldf(filename);
+                DATA_buffer data;
+                int ldf_pos_index = 0;
+
+                // Start of a cycle:
+                for (int i = 0; i < 3; i++) {
                 // Begin to parse ldf fielname.
                 // iData is now the last data index.
-                iData = read_ldf(tmc, filename);
-
+                    iData = read_ldf(tmc, ldf, data, ldf_pos_index, iData);
+                    std::cout << "RETVAL is " << data.GetRetval() << std::endl;
+                }
                 // Writing statistics
                 if (stat == 1)
                 {
