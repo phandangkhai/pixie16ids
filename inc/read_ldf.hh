@@ -153,7 +153,6 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], LDF_file& ldf, DATA_buffer& data
 
     // data.Reset();
 
-    std::cout << "Reading cycle index (begin) is at: " << binary_file.tellg() << std::endl;
     while (true) {
         std::cout << "Index at the beginning without escaping loop: " << binary_file.tellg() << std::endl;
         if (!data.Read(&binary_file, (char*)data_, nBytes, 1000000, full_spill, bad_spill, debug_mode)) {
@@ -242,8 +241,6 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], LDF_file& ldf, DATA_buffer& data
         }
         
     }
-
-    std::cout << "Reading cycle index is at (end): " << pos_index << std::endl;
 
     delete[] data_;
 

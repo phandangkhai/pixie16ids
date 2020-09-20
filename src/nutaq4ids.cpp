@@ -185,8 +185,7 @@ int main(int argc, char **argv)
                 // iData is now the last data index.
                     iData = read_ldf(tmc, ldf, data, ldf_pos_index, iData);
                     if (data.GetRetval() == 2) {
-                        std::cout << "Retval says 2, quit main loop!\n\n";
-                        break;
+                        break; // We only break this loop after the entire file is read and parsed.
                     }
                 }
                 // Writing statistics
