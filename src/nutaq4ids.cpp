@@ -182,6 +182,13 @@ int main(int argc, char **argv)
 
                 // Start of a cycle:
                 while (true) {
+
+                if (!first_cycle)
+                    {
+                        //Allocating memory
+                        DataArray = (struct data *)calloc(memoryuse + 10000, sizeof(struct data));
+                        TempArray = (struct data *)calloc(memoryuse + 10000, sizeof(struct data));
+                    }
                 // Begin to parse ldf fielname.
                 // iData is now the last data index.
                     iData = read_ldf(tmc, ldf, data, ldf_pos_index, iData);
@@ -196,12 +203,6 @@ int main(int argc, char **argv)
 
                 // Sorting the data chronologically.
                 MergeSort(DataArray, TempArray, 0, iData);
-
-                // Extract first and last time stamps for statistics.
-                if (first_cycle) {
-                    first_ts = DataArray[1].time;
-                    first_cycle = false;
-                }
 
 
                 //Looking for correlations
@@ -249,10 +250,17 @@ int main(int argc, char **argv)
 
                 printf("\n");
                 current_block = 0;
-                if (data.GetRetval() == 2) {
+                // Extract first and last time stamps for statistics.
+                if (first_cycle) { // first cycle.
+                    first_ts = DataArray[1].time;
+                    first_cycle = false;
+                }
+                if (data.GetRetval() == 2) { // last cycle.
                     last_ts = DataArray[iData].time;
                     std::cout << "First time stamp: " << first_ts << std::endl;
                     std::cout << "Last time stamp: " << last_ts << std::endl;
+                    free(DataArray);
+                    free(TempArray);
                     break; // We only break this loop after the entire file is read and parsed.
                 }
             }                
