@@ -7,7 +7,7 @@
 #define MAX_NUM_MOD       10
 #define MAX_CAL            4
 #define MAX_ID        0x1000
-#define memoryuse    1000000
+#define memoryuse    4000000
 
 
 ////if digitizer unit time = 10ns 
@@ -38,14 +38,14 @@ typedef struct Event {
   short int evSize;
 } Event;
 
-typedef struct TEvent {
-  int E[MAX_NUM_DETTYPES][MAX_NUM_DET];
-  int T[MAX_NUM_DETTYPES][MAX_NUM_DET];
-  int M[MAX_NUM_DETTYPES];
-  int MULT;
-  ULong64_t TIME_REF;
-  ULong64_t TIME_RUN;
-} TEvent;
+//typedef struct TEvent {
+  //int E[MAX_NUM_DETTYPES][MAX_NUM_DET];
+  //int T[MAX_NUM_DETTYPES][MAX_NUM_DET];
+  //int M[MAX_NUM_DETTYPES];
+  //int MULT;
+  //ULong64_t TIME_REF;
+  //ULong64_t TIME_RUN;
+//} TEvent;
 
 
 typedef struct GaspRecHeader {
@@ -120,7 +120,7 @@ typedef struct GaspRecHeader {
   
   
   struct           Event *EventArray;
-  struct          TEvent *TEventArray;
+  //struct          TEvent *TEventArray;
   struct   GaspRecHeader *GHeader; 
   struct            data *DataArray; 
   struct            data *TempArray; 

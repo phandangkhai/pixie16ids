@@ -61,8 +61,8 @@ int main(int argc, char **argv)
     DataArray = (struct data *)calloc(memoryuse + 10000, sizeof(struct data));
     TempArray = (struct data *)calloc(memoryuse + 10000, sizeof(struct data));
 
-    if (root == 1)
-        TEventArray = (struct TEvent *)calloc(memoryuse + 10000, sizeof(struct TEvent));
+    //if (root == 1)
+        //TEventArray = (struct TEvent *)calloc(memoryuse + 10000, sizeof(struct TEvent));
 
     if (gasp == 1 || list == 1)
     {
@@ -146,7 +146,7 @@ int main(int argc, char **argv)
             if (root == 1)
             {
                 event_builder_tree();
-                write_tree();
+                //write_tree();
                 totEvt += iEvt;
                 // write_time();
             }
@@ -221,7 +221,7 @@ int main(int argc, char **argv)
                 else if (root == 1)
                 {
                     event_builder_tree();
-                    write_tree();
+                    //write_tree();
                     totEvt += iEvt;
 
                     printf(" (%3d ev/blk) %9d events written to %s ",

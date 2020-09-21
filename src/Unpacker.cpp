@@ -19,7 +19,7 @@ bool Unpacker::ReadSpill(std::vector<XiaData*>& decodedList, unsigned int* data,
     // While the current location in the buffer has not gone beyond the end
     // of the buffer (ignoring the last three delimiters, continue reading
     while (nWords_read <= nWords) {
-
+		std::cout << "\n\nIn a while (nWords_read <= nWords) loop!!!\n\n";
         // First we need to skip the delimiter.
         while (data[nWords_read] == 0xFFFFFFFF)
             nWords_read++;
@@ -116,6 +116,7 @@ int Unpacker::DecodeBuffer(std::vector<XiaData*>& result, unsigned int* buf, con
 
     bool read_header_mode = true; //if this is true, we only parse first 4 words.
     while (buf < bufStart + bufLen) {
+		
         XiaData* data = new XiaData();
         bool hasExternalTimestamp = false;
 

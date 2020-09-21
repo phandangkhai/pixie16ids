@@ -191,22 +191,30 @@ void event_builder_tree() {
     
     //saving the event in ROOT TTree format 
    
-    TEventArray[iEvt].MULT  = mult;      // multiplicity
+    //TEventArray[iEvt].MULT  = mult;      // multiplicity
+    MULT_branch = mult;
    
-    TEventArray[iEvt].TIME_REF  = lrt_ref;    // time vs last reference type
+    //TEventArray[iEvt].TIME_REF  = lrt_ref;    // time vs last reference type
+    TIME_REF_branch = lrt_ref;
   
-    TEventArray[iEvt].TIME_RUN  = lrt_run;    // timestamp in run_unit units
+    //TEventArray[iEvt].TIME_RUN  = lrt_run;    // timestamp in run_unit units
+    TIME_RUN_branch = lrt_run;
 
    
             //NOTE: In ROOT numbering for leafs (index) starts from 0
 	  for(n=0; n<m; n++) {
 	    type =  tmc      [DataArray[k+n].modnum][DataArray[k+n].chnum];
-     index = ntmc[type][DataArray[k+n].modnum][DataArray[k+n].chnum];
+		index = ntmc[type][DataArray[k+n].modnum][DataArray[k+n].chnum];
             //~if (index != reftype) {
   
-              TEventArray[iEvt].E[type][index-1] = energy[type][index];
-              TEventArray[iEvt].T[type][index-1] = hrt[n];
-              TEventArray[iEvt].M[type]        = detcount[type];
+              //TEventArray[iEvt].E[type][index-1] = energy[type][index];
+              //TEventArray[iEvt].T[type][index-1] = hrt[n];
+              //TEventArray[iEvt].M[type]        = detcount[type];
+              
+              E_branch[type][index-1] = energy[type][index];
+              T_branch[type][index-1] = hrt[n];
+              M_branch[type] = detcount[type];
+              
               hrt[n] = 0;
 	      
             //~}
@@ -219,7 +227,7 @@ void event_builder_tree() {
       //~ TEventArray[iEvt].T[reftype] = tref/lrtunit;
     //~ }
 	  
-    
+    tree->Fill();
         
     iEvt++;
     k+=m;
