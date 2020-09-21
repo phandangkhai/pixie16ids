@@ -249,10 +249,10 @@ int main(int argc, char **argv)
 
                 printf("\n");
                 current_block = 0;
-                std::cout << "First time stamp: " << first_ts << std::endl;
-                std::cout << "Last time stamp: " << last_ts << std::endl;
                 if (data.GetRetval() == 2) {
                     last_ts = DataArray[iData].time;
+                    std::cout << "First time stamp: " << first_ts << std::endl;
+                    std::cout << "Last time stamp: " << last_ts << std::endl;
                     break; // We only break this loop after the entire file is read and parsed.
                 }
             }                
