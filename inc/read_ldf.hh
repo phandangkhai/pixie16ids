@@ -24,7 +24,7 @@
 #define ACTUAL_BUFF_SIZE 8194
 
 
-int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], LDF_file& ldf, DATA_buffer& data, int& pos_index, int iData) {
+int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], LDF_file& ldf, DATA_buffer& data, int& pos_index) {
     DIR_buffer dir;
     HEAD_buffer head;
     // DATA_buffer data;
@@ -72,8 +72,9 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], LDF_file& ldf, DATA_buffer& data
         return -1;
     }
 
-    std::cout << "Enter the maximum number of spills to parse (type 0 to read all): ";
-    std::cin >> max_num_spill;
+    //std::cout << "Enter the maximum number of spills to parse (type 0 to read all): ";
+    //std::cin >> max_num_spill;
+    max_num_spill = 100;
     if (max_num_spill != 0)
         std::cout << "Maximum number of spills: " << max_num_spill << std::endl;
     else
@@ -267,10 +268,10 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], LDF_file& ldf, DATA_buffer& data
         myfile << "Out-of-range (saturated) flag: " << decodedEvent->IsSaturated() << ".\n";
 
         // Transfer info to DataArray to build events.
-        DataArray[i+iData].energy = decodedEvent->GetEnergy();
-        DataArray[i+iData].time = decodedEvent->GetTime();
-        DataArray[i+iData].chnum = decodedEvent->GetChannelNumber();
-        DataArray[i+iData].modnum = decodedEvent->GetModuleNumber();
+        DataArray[i].energy = decodedEvent->GetEnergy();
+        DataArray[i].time = decodedEvent->GetTime();
+        DataArray[i].chnum = decodedEvent->GetChannelNumber();
+        DataArray[i].modnum = decodedEvent->GetModuleNumber();
         // std::cout << "Data index written: " << i+iData << std::endl;
     }
 
@@ -281,5 +282,5 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], LDF_file& ldf, DATA_buffer& data
     }
 
     binary_file.close();
-    return decodedList_.size()+iData;
+    return decodedList_.size();
 }

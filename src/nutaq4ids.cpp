@@ -62,8 +62,8 @@ int main(int argc, char **argv)
     TempArray = (struct data *)calloc(memoryuse + 10000, sizeof(struct data));
 
 
-    if (root == 1)
-        TEventArray = (struct TEvent *)calloc(memoryuse + 10000, sizeof(struct TEvent));
+    //if (root == 1)
+        //TEventArray = (struct TEvent *)calloc(memoryuse + 10000, sizeof(struct TEvent));
 
     if (gasp == 1 || list == 1)
     {
@@ -143,7 +143,7 @@ int main(int argc, char **argv)
 
             // iData = 0, iEvt = 0;
             // read_grain();
-            iData = read_ldf(tmc, ldf, data, ldf_pos_index, iData);
+            iData = read_ldf(tmc, ldf, data, ldf_pos_index);
             printf("Everything is ok, now ldf file is read!\n");
 
             // First and last time stamps for statistics.
@@ -153,7 +153,7 @@ int main(int argc, char **argv)
             if (root == 1)
             {
                 event_builder_tree();
-                write_tree();
+                //write_tree();
                 totEvt += iEvt;
                 // write_time();
             }
@@ -191,7 +191,7 @@ int main(int argc, char **argv)
                     }
                 // Begin to parse ldf fielname.
                 // iData is now the last data index.
-                    iData = read_ldf(tmc, ldf, data, ldf_pos_index, iData);
+                    iData = read_ldf(tmc, ldf, data, ldf_pos_index);
 
                 //}
                 // Writing statistics
@@ -240,7 +240,7 @@ int main(int argc, char **argv)
                 else if (root == 1)
                 {
                     event_builder_tree();
-                    write_tree();
+                    //write_tree();
                     totEvt += iEvt;
 
                     printf(" (%3d ev/blk) %9d events written to %s ",
@@ -259,10 +259,13 @@ int main(int argc, char **argv)
                     last_ts = DataArray[iData].time;
                     std::cout << "First time stamp: " << first_ts << std::endl;
                     std::cout << "Last time stamp: " << last_ts << std::endl;
-                    free(DataArray);
-                    free(TempArray);
+					free(DataArray);
+					free(TempArray);                    
                     break; // We only break this loop after the entire file is read and parsed.
                 }
+                std::cout << "Freeing DataArray!\n";
+                free(DataArray);
+                free(TempArray);
             }                
             }
 

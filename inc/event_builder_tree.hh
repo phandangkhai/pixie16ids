@@ -159,6 +159,13 @@ void event_builder_tree() {
         hrt[n] = 1000 + DataArray[k+n].time - evt_start ;
         
         // Reading the energy - performing addback if we have more detectors of the same type
+        //std::cout << "type: " << type << std::endl;
+        //std::cout << "index: " << index << std::endl;
+        //std::cout << "dettypes: " << dettypes << std::endl;
+        //std::cout << "detnum: " << detnum << std::endl;
+        //std::cout << "k+n = " << k+n << std::endl;
+        //std::cout << "energy[0][0]: " << energy[0][0] << std::endl;
+        //std::cout << "DataArray[k+n].energy: " << DataArray[k+n].energy << std::endl;
         energy[type][index] += DataArray[k+n].energy;
                
       }
@@ -191,11 +198,15 @@ void event_builder_tree() {
     
     //saving the event in ROOT TTree format 
    
-    TEventArray[iEvt].MULT  = mult;      // multiplicity
+    //TEventArray[iEvt].MULT  = mult;      // multiplicity
    
-    TEventArray[iEvt].TIME_REF  = lrt_ref;    // time vs last reference type
+    //TEventArray[iEvt].TIME_REF  = lrt_ref;    // time vs last reference type
   
-    TEventArray[iEvt].TIME_RUN  = lrt_run;    // timestamp in run_unit units
+    //TEventArray[iEvt].TIME_RUN  = lrt_run;    // timestamp in run_unit units
+    
+    MULT_branch = mult;
+    TIME_REF_branch = lrt_ref;
+    TIME_RUN_branch = lrt_run;
 
    
             //NOTE: In ROOT numbering for leafs (index) starts from 0
@@ -204,9 +215,15 @@ void event_builder_tree() {
      index = ntmc[type][DataArray[k+n].modnum][DataArray[k+n].chnum];
             //~if (index != reftype) {
   
-              TEventArray[iEvt].E[type][index-1] = energy[type][index];
-              TEventArray[iEvt].T[type][index-1] = hrt[n];
-              TEventArray[iEvt].M[type]        = detcount[type];
+              //TEventArray[iEvt].E[type][index-1] = energy[type][index];
+              //TEventArray[iEvt].T[type][index-1] = hrt[n];
+              //TEventArray[iEvt].M[type]        = detcount[type];
+              //hrt[n] = 0;
+              
+              E_branch[type][index-1] = energy[type][index];
+              T_branch[type][index-1] = hrt[n];
+              M_branch[type] = detcount[type];
+              
               hrt[n] = 0;
 	      
             //~}
@@ -219,7 +236,7 @@ void event_builder_tree() {
       //~ TEventArray[iEvt].T[reftype] = tref/lrtunit;
     //~ }
 	  
-    
+    tree->Fill();
         
     iEvt++;
     k+=m;
