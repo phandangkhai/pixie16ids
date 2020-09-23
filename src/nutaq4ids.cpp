@@ -13,6 +13,7 @@ https://github.com/rlica/nutaq4ids
 #include <stdint.h>
 #include <string.h>
 #include <math.h>
+#include <chrono>
 
 #include "TFile.h"
 #include "TTree.h"
@@ -182,7 +183,7 @@ int main(int argc, char **argv)
 
                 // Start of a cycle:
                 while (true) {
-
+				auto t1 = std::chrono::high_resolution_clock::now();
                 if (!first_cycle)
                     {
                         //Allocating memory
@@ -193,51 +194,53 @@ int main(int argc, char **argv)
                 // iData is now the last data index.
                     iData = read_ldf(tmc, ldf, data, ldf_pos_index);
 
+                ////}
+                //// Writing statistics
+                //if (stat == 1)
+                //{
+                    //write_time();
+                    //continue;
                 //}
-                // Writing statistics
-                if (stat == 1)
-                {
-                    write_time();
-                    continue;
-                }
+                auto t_read = std::chrono::high_resolution_clock::now();
 
                 // Sorting the data chronologically.
                 MergeSort(DataArray, TempArray, 0, iData);
 
+				auto t_sort = std::chrono::high_resolution_clock::now();
+				
+                ////Looking for correlations
+                //if (corr > 0)
+                //{
+                    //correlations();
+                    //continue;
+                //}
 
-                //Looking for correlations
-                if (corr > 0)
-                {
-                    correlations();
-                    continue;
-                }
+                //// Writing to GASPWare
+                //else if (gasp == 1)
+                //{
+                    //event_builder();
+                    //write_gasp();
+                    //totEvt += iEvt;
 
-                // Writing to GASPWare
-                else if (gasp == 1)
-                {
-                    event_builder();
-                    write_gasp();
-                    totEvt += iEvt;
+                    //printf(" (%3d ev/blk) %9d events written to %s ",
+                           //iEvt / (current_block - prev_block + 1), totEvt, outname); //Fixed a very old bug -> add 1 to avoid division by zero (AAAAAAARGH)
 
-                    printf(" (%3d ev/blk) %9d events written to %s ",
-                           iEvt / (current_block - prev_block + 1), totEvt, outname); //Fixed a very old bug -> add 1 to avoid division by zero (AAAAAAARGH)
+                    //// write_time();
+                //}
 
-                    // write_time();
-                }
-
-                // Writing event lists
-                else if (list == 1)
-                {
-                    event_builder_list();
-                    write_list();
-                    totEvt += iEvt;
-                    printf(" (%3d ev/blk) %9d events written to %s ",
-                           iEvt / (current_block - prev_block + 1), totEvt, outname);
-                    // write_time();
-                }
+                //// Writing event lists
+                //else if (list == 1)
+                //{
+                    //event_builder_list();
+                    //write_list();
+                    //totEvt += iEvt;
+                    //printf(" (%3d ev/blk) %9d events written to %s ",
+                           //iEvt / (current_block - prev_block + 1), totEvt, outname);
+                    //// write_time();
+                //}
 
                 // Writing a ROOT Tree
-                else if (root == 1)
+                if (root == 1)
                 {
                     event_builder_tree();
                     //write_tree();
@@ -247,6 +250,13 @@ int main(int argc, char **argv)
                            iEvt / (current_block - prev_block + 1), totEvt, outname);
                     // write_time();
                 }
+                auto t_write_root = std::chrono::high_resolution_clock::now();
+                auto read_duration = std::chrono::duration_cast<std::chrono::microseconds>(t_read - t1).count();
+                auto sort_duration = std::chrono::duration_cast<std::chrono::microseconds>(t_sort - t_read).count();
+                auto root_duration = std::chrono::duration_cast<std::chrono::microseconds>(t_write_root - t_sort).count();
+                std::cout << "Read ldf takes " << read_duration << std::endl;
+                std::cout << "Merge sort takes " << sort_duration << std::endl;
+                std::cout << "Write root takes " << root_duration << std::endl;
 
                 printf("\n");
                 current_block = 0;

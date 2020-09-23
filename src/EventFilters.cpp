@@ -16,8 +16,8 @@ void EventFilters::ApplyFilters(int a[MAX_NUM_MOD][MAX_NUM_CHN]) {
 				stats[0][decodedEvent->GetModuleNumber()][decodedEvent->GetChannelNumber()]++; // pileup
 			}
 		}
-		DetTypeCheck(i);
-		FlagsFilter(i);
+		//DetTypeCheck(i);
+		//FlagsFilter(i);
 	}
 }
 

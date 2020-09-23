@@ -155,7 +155,7 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], LDF_file& ldf, DATA_buffer& data
     // data.Reset();
 
     while (true) {
-        std::cout << "Index at the beginning without escaping loop: " << binary_file.tellg() << std::endl;
+		auto t1 = std::chrono::high_resolution_clock::now();
         if (!data.Read(&binary_file, (char*)data_, nBytes, 1000000, full_spill, bad_spill, debug_mode)) {
             if (data.GetRetval() == 1) {
                 if (debug_mode) {
@@ -191,7 +191,9 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], LDF_file& ldf, DATA_buffer& data
             }
             continue;
         }
-
+		auto t_read = std::chrono::high_resolution_clock::now();
+		auto read_duration = std::chrono::duration_cast<std::chrono::microseconds>(t_read - t1).count();
+		std::cout << "Read() takes " << read_duration << std::endl;
         if (debug_mode) {
             status << "\033[0;32m" << " [READ] " << "\033[0m" << nBytes / 4 << " words ("
                 << 100 * binary_file.tellg() / file_length << "%), ";
@@ -209,7 +211,9 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], LDF_file& ldf, DATA_buffer& data
                 if (debug_mode)
                     std::cout << "Spill is full and good!" << std::endl;
                 unpacker_.ReadSpill(decodedList_, data_, nBytes / 4, is_verbose, debug_mode);
-
+				auto t_readspill = std::chrono::high_resolution_clock::now();
+				auto readspill_duration = std::chrono::duration_cast<std::chrono::microseconds>(t_readspill - t_read).count();
+				std::cout << "ReadSpill() takes " << readspill_duration << std::endl;
                 //IdleTask();
                 if (debug_mode)
                     std::cout << std::endl << std::endl;
@@ -236,51 +240,61 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], LDF_file& ldf, DATA_buffer& data
             // pos_index -= ACTUAL_BUFF_SIZE*4;
             break;
         }
-        else
-        {
-            std::cout << "Index at the end escaping loop: " << binary_file.tellg() << std::endl;
-        }
         
     }
 
     delete[] data_;
 
     // Exporting decoded info to DataArray, and print a text file result.
+    auto t2 = std::chrono::high_resolution_clock::now();
     XiaData* decodedEvent;
-    ofstream unfiltered, myfile;
-    myfile.open("Parsing results.txt");
+    //ofstream myfile;
+    //myfile.open("Parsing results.txt");
 
-
+	
     EventFilters filters(decodedList_, debug_mode, stats);
+    auto t_init = std::chrono::high_resolution_clock::now();
     filters.ApplyFilters(tmc);
-
+	auto t_loop = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < decodedList_.size(); i++) {
         decodedEvent = decodedList_[i];
-        if (i != 0) {
-            myfile << "\n \n";
-        }
-        myfile << "Decoded event number " << i << ".\n";
-        myfile << "Event energy: " << decodedEvent->GetEnergy() << ".\n";
-        myfile << "Time stamp: " << decodedEvent->GetTime() << ".\n";
-        myfile << "Channel number: " << decodedEvent->GetChannelNumber() << ".\n";
-        myfile << "Module number: " << decodedEvent->GetModuleNumber() << ".\n";
-        myfile << "Pileup flag: " << decodedEvent->IsPileup() << ".\n";
-        myfile << "Out-of-range (saturated) flag: " << decodedEvent->IsSaturated() << ".\n";
+        //if (i != 0) {
+            //myfile << "\n \n";
+        //}
+        //myfile << "Decoded event number " << i << ".\n";
+        //myfile << "Event energy: " << decodedEvent->GetEnergy() << ".\n";
+        //myfile << "Time stamp: " << decodedEvent->GetTime() << ".\n";
+        //myfile << "Channel number: " << decodedEvent->GetChannelNumber() << ".\n";
+        //myfile << "Module number: " << decodedEvent->GetModuleNumber() << ".\n";
+        //myfile << "Pileup flag: " << decodedEvent->IsPileup() << ".\n";
+        //myfile << "Out-of-range (saturated) flag: " << decodedEvent->IsSaturated() << ".\n";
 
         // Transfer info to DataArray to build events.
         DataArray[i].energy = decodedEvent->GetEnergy();
         DataArray[i].time = decodedEvent->GetTime();
         DataArray[i].chnum = decodedEvent->GetChannelNumber();
         DataArray[i].modnum = decodedEvent->GetModuleNumber();
-        // std::cout << "Data index written: " << i+iData << std::endl;
-    }
+        
 
-    myfile.close();
+    }
+	auto t_mid = std::chrono::high_resolution_clock::now();
+    //myfile.close();
     for (i=0; i<decodedList_.size();i++){
         if (decodedList_[i])
             delete decodedList_[i];
     }
 
     binary_file.close();
+    auto t_text = std::chrono::high_resolution_clock::now();
+    
+    auto text_duration = std::chrono::duration_cast<std::chrono::microseconds>(t_mid - t2).count();
+    auto mid_duration = std::chrono::duration_cast<std::chrono::microseconds>(t_text - t_mid).count();
+    auto loop_duration = std::chrono::duration_cast<std::chrono::microseconds>(t_loop - t2).count();
+    std::cout << "Write text and assigning DataArray takes " << text_duration << std::endl;
+    std::cout << "Delete decodedList_ takes " << mid_duration << std::endl;
+    std::cout << "Init filters take " << std::chrono::duration_cast<std::chrono::microseconds>(t_init - t2).count() << std::endl;
+    std::cout << "Applyfilters takes " << std::chrono::duration_cast<std::chrono::microseconds>(t_loop - t_init).count() << std::endl ;
+    
+                
     return decodedList_.size();
 }

@@ -13,6 +13,8 @@ Fold       1
 |Index	|Type	|Mod	|Chan	|Delay	|Link	|Start	|Stop	|Comment
 1	1	0	0	0       0	0	0	Det1 #1
 1	2	1	0   0		0	0	0	Det2 #2 
+----------------------------------------------------------
+1	3	0	1   0		0	0	0	Det3 #3 
 
 
 
