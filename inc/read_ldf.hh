@@ -80,8 +80,6 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], LDF_file& ldf, DATA_buffer& data
     else
         std::cout << "No maximum number of spills specified, proceed to read all spills!" << std::endl;
     // Get length and rewind to read from beg
-    binary_file.seekg(0, binary_file.end);
-    ldf.SetLength(binary_file.tellg());
     binary_file.seekg(0, binary_file.beg);
 
     //// Start reading ldf DIR buffer
@@ -198,23 +196,6 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], LDF_file& ldf, DATA_buffer& data
             std::cout << "\r" << status.str();
         }
 
-        float progress = 0.0;
-        while (progress < 1.0) {
-            int barWidth = 70;
-
-            std::cout << "[";
-            int pos = barWidth * progress;
-            for (int i = 0; i < barWidth; ++i) {
-                if (i < pos) std::cout << "=";
-                else if (i == pos) std::cout << ">";
-                else std::cout << " ";
-            }
-            std::cout << "] " << int(progress * 100.0) << " %\r";
-            std::cout.flush();
-
-            progress = binary_file.tellg() / file_length;
-        }
-        std::cout << std::endl;
 
         if (full_spill) {
             if (debug_mode) {

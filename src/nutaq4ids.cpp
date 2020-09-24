@@ -179,91 +179,115 @@ int main(int argc, char **argv)
                 DATA_buffer data;
                 int ldf_pos_index = 0;
                 bool first_cycle = true;
+                float progress = 0.0;
+
+                // Set file length then rewind to the beginning.
+                binary_file.open(ldf.GetName().c_str(), std::ios::binary);
+                binary_file.seekg(0, binary_file.end);
+                ldf.SetLength(binary_file.tellg());
+                binary_file.seekg(0, binary_file.beg);
+                binary_file.close();
 
                 // Start of a cycle:
                 while (true) {
-                if (!first_cycle)
-                    {
-                        //Allocating memory
-                        DataArray = (struct data *)calloc(memoryuse + 10000, sizeof(struct data));
-                        TempArray = (struct data *)calloc(memoryuse + 10000, sizeof(struct data));
-                    }
-                // Begin to parse ldf fielname.
-                // iData is now the last data index.
+                    if (!first_cycle)
+                        {
+                            //Allocating memory
+                            DataArray = (struct data *)calloc(memoryuse + 10000, sizeof(struct data));
+                            TempArray = (struct data *)calloc(memoryuse + 10000, sizeof(struct data));
+                        }
+                    // Begin to parse ldf fielname.
+                    // iData is now the last data index.
                     iData = read_ldf(tmc, ldf, data, ldf_pos_index);
+        
 
-                //// Writing statistics
-                //if (stat == 1)
-                //{
-                    //write_time();
-                    //continue;
-                //}
-                
-                // Sorting the data chronologically.
-                MergeSort(DataArray, TempArray, 0, iData);
-				
-                ////Looking for correlations
-                //if (corr > 0)
-                //{
-                    //correlations();
-                    //continue;
-                //}
+                    int barWidth = 70;
 
-                //// Writing to GASPWare
-                //else if (gasp == 1)
-                //{
-                    //event_builder();
-                    //write_gasp();
-                    //totEvt += iEvt;
+                    std::cout << "[";
+                    int pos = barWidth * progress;
+                    for (int i = 0; i < barWidth; ++i) {
+                        if (i < pos) std::cout << "=";
+                        else if (i == pos) std::cout << ">";
+                        else std::cout << " ";
+                    }
+                    std::cout << "] " << int(progress * 100.0) << " %\r";
+                    std::cout.flush();
 
-                    //printf(" (%3d ev/blk) %9d events written to %s ",
-                           //iEvt / (current_block - prev_block + 1), totEvt, outname); //Fixed a very old bug -> add 1 to avoid division by zero (AAAAAAARGH)
+                    progress = ldf_pos_index / file_length;
+            
+                    std::cout << std::endl;
 
-                    //// write_time();
-                //}
+                    //// Writing statistics
+                    //if (stat == 1)
+                    //{
+                        //write_time();
+                        //continue;
+                    //}
 
-                //// Writing event lists
-                //else if (list == 1)
-                //{
-                    //event_builder_list();
-                    //write_list();
-                    //totEvt += iEvt;
-                    //printf(" (%3d ev/blk) %9d events written to %s ",
-                           //iEvt / (current_block - prev_block + 1), totEvt, outname);
-                    //// write_time();
-                //}
+                    // Sorting the data chronologically.
+                    MergeSort(DataArray, TempArray, 0, iData);
+                    
+                    ////Looking for correlations
+                    //if (corr > 0)
+                    //{
+                        //correlations();
+                        //continue;
+                    //}
 
-                // Writing a ROOT Tree
-                if (root == 1)
-                {
-                    event_builder_tree();
-                    //write_tree();
-                    totEvt += iEvt;
+                    //// Writing to GASPWare
+                    //else if (gasp == 1)
+                    //{
+                        //event_builder();
+                        //write_gasp();
+                        //totEvt += iEvt;
 
-                    printf(" (%3d ev/blk) %9d events written to %s ",
-                           iEvt / (current_block - prev_block + 1), totEvt, outname);
-                    // write_time();
-                }
+                        //printf(" (%3d ev/blk) %9d events written to %s ",
+                            //iEvt / (current_block - prev_block + 1), totEvt, outname); //Fixed a very old bug -> add 1 to avoid division by zero (AAAAAAARGH)
 
-                printf("\n");
-                current_block = 0;
-                // Extract first and last time stamps for statistics.
-                if (first_cycle) { // first cycle.
-                    first_ts = DataArray[1].time;
-                    first_cycle = false;
-                }
-                if (data.GetRetval() == 2) { // last cycle.
-                    last_ts = DataArray[iData].time;
-                    std::cout << "First time stamp: " << first_ts << std::endl;
-                    std::cout << "Last time stamp: " << last_ts << std::endl;
-					free(DataArray);
-					free(TempArray);                    
-                    break; // We only break this loop after the entire file is read and parsed.
-                }
-                std::cout << "Freeing DataArray!\n";
-                free(DataArray);
-                free(TempArray);
-            }                
+                        //// write_time();
+                    //}
+
+                    //// Writing event lists
+                    //else if (list == 1)
+                    //{
+                        //event_builder_list();
+                        //write_list();
+                        //totEvt += iEvt;
+                        //printf(" (%3d ev/blk) %9d events written to %s ",
+                            //iEvt / (current_block - prev_block + 1), totEvt, outname);
+                        //// write_time();
+                    //}
+
+                    // Writing a ROOT Tree
+                    if (root == 1)
+                    {
+                        event_builder_tree();
+                        //write_tree();
+                        totEvt += iEvt;
+
+                        printf(" (%3d ev/blk) %9d events written to %s ",
+                            iEvt / (current_block - prev_block + 1), totEvt, outname);
+                        // write_time();
+                    }
+
+                    printf("\n");
+                    current_block = 0;
+                    // Extract first and last time stamps for statistics.
+                    if (first_cycle) { // first cycle.
+                        first_ts = DataArray[1].time;
+                        first_cycle = false;
+                    }
+                    if (data.GetRetval() == 2) { // last cycle.
+                        last_ts = DataArray[iData].time;
+                        std::cout << "First time stamp: " << first_ts << std::endl;
+                        std::cout << "Last time stamp: " << last_ts << std::endl;
+                        free(DataArray);
+                        free(TempArray);                    
+                        break; // We only break this loop after the entire file is read and parsed.
+                    }
+                    free(DataArray);
+                    free(TempArray);
+                }                
             }
 
         //Printing statistics for each run if not in correlation mode
