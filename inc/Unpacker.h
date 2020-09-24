@@ -12,8 +12,7 @@ using namespace std;
 class Unpacker {
 public:
 	/// Default constructor.
-	Unpacker() { 
-		std::cout << "Initializied mask map from vsn to pair of (firmware, frequency)!" << std::endl;
+	Unpacker() {
 		InitializeMaskMap(); }
 
 	bool ReadSpill(std::vector<XiaData*>& decodedList, unsigned int* data, unsigned int nWords, bool is_verbose, bool& debug_mode);

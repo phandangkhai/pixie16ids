@@ -198,6 +198,24 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], LDF_file& ldf, DATA_buffer& data
             std::cout << "\r" << status.str();
         }
 
+        float progress = 0.0;
+        while (progress < 1.0) {
+            int barWidth = 70;
+
+            std::cout << "[";
+            int pos = barWidth * progress;
+            for (int i = 0; i < barWidth; ++i) {
+                if (i < pos) std::cout << "=";
+                else if (i == pos) std::cout << ">";
+                else std::cout << " ";
+            }
+            std::cout << "] " << int(progress * 100.0) << " %\r";
+            std::cout.flush();
+
+            progress = binary_file.tellg() / file_length;
+        }
+        std::cout << std::endl;
+
         if (full_spill) {
             if (debug_mode) {
                 std::cout << std::endl << "full spill is true!" << std::endl;
