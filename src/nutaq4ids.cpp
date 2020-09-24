@@ -41,6 +41,17 @@ https://github.com/rlica/nutaq4ids
 #include "write_time.hh"
 #include "read_ldf.hh"
 
+#define PBSTR "||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
+#define PBWIDTH 60
+
+void printProgress(double percentage) {
+    int val = (int) (percentage * 100);
+    int lpad = (int) (percentage * PBWIDTH);
+    int rpad = PBWIDTH - lpad;
+    printf("\r%3d%% [%.*s%*s]", val, lpad, PBSTR, rpad, "");
+    // fflush(stdout);
+}
+
 int main(int argc, char **argv)
 {
 
@@ -161,7 +172,7 @@ int main(int argc, char **argv)
 
         // Format: normal mode (not rate mode).
         else
-            for (runpart = 0; runpart < 1; runpart++)
+            for (runpart = 0; runpart < 2; runpart++)
             {
                 start_clock = (double)clock();
 
@@ -180,6 +191,7 @@ int main(int argc, char **argv)
                 int ldf_pos_index = 0;
                 bool first_cycle = true;
                 float progress = 0.0;
+                int barWidth = 70;
 
                 // Set file length then rewind to the beginning.
                 binary_file.open(ldf.GetName().c_str(), std::ios::binary);
@@ -190,32 +202,34 @@ int main(int argc, char **argv)
 
                 // Start of a cycle:
                 while (true) {
-                    if (!first_cycle)
-                        {
-                            //Allocating memory
-                            DataArray = (struct data *)calloc(memoryuse + 10000, sizeof(struct data));
-                            TempArray = (struct data *)calloc(memoryuse + 10000, sizeof(struct data));
-                        }
+                    // if (!first_cycle)
+                    //     {
+                    //         //Allocating memory
+                    //         DataArray = (struct data *)calloc(memoryuse + 10000, sizeof(struct data));
+                    //         TempArray = (struct data *)calloc(memoryuse + 10000, sizeof(struct data));
+                    //     }
                     // Begin to parse ldf fielname.
                     // iData is now the last data index.
+                    memset(DataArray,0,memoryuse + 10000);
+                    memset(TempArray,0,memoryuse + 10000);
                     iData = read_ldf(tmc, ldf, data, ldf_pos_index);
         
+                    progress = float(ldf_pos_index) / float(file_length);
+  
+                    // std::cout << "[";
+                    // int pos = barWidth * progress;
+                    // for (int i = 0; i < barWidth; ++i) {
+                    //     if (i < pos) std::cout << "=";
+                    //     else if (i == pos) std::cout << ">";
+                    //     else std::cout << " ";
+                    // }
+                    // std::cout << "] " << int(progress * 100.0) << " %\r";
+                    // std::cout.flush();
 
-                    int barWidth = 70;
+                    printProgress(progress);
 
-                    std::cout << "[";
-                    int pos = barWidth * progress;
-                    for (int i = 0; i < barWidth; ++i) {
-                        if (i < pos) std::cout << "=";
-                        else if (i == pos) std::cout << ">";
-                        else std::cout << " ";
-                    }
-                    std::cout << "] " << int(progress * 100.0) << " %\r";
-                    std::cout.flush();
-
-                    progress = ldf_pos_index / file_length;
             
-                    std::cout << std::endl;
+                    // std::cout << std::endl;
 
                     //// Writing statistics
                     //if (stat == 1)
@@ -264,14 +278,13 @@ int main(int argc, char **argv)
                         event_builder_tree();
                         //write_tree();
                         totEvt += iEvt;
-
-                        printf(" (%3d ev/blk) %9d events written to %s ",
-                            iEvt / (current_block - prev_block + 1), totEvt, outname);
                         // write_time();
+                        printf(" %3d events written to %s ",
+                            iEvt, outname);
                     }
 
-                    printf("\n");
-                    current_block = 0;
+                    printf("\t");
+
                     // Extract first and last time stamps for statistics.
                     if (first_cycle) { // first cycle.
                         first_ts = DataArray[1].time;
@@ -279,15 +292,17 @@ int main(int argc, char **argv)
                     }
                     if (data.GetRetval() == 2) { // last cycle.
                         last_ts = DataArray[iData].time;
+                        std::cout << std::endl;
                         std::cout << "First time stamp: " << first_ts << std::endl;
-                        std::cout << "Last time stamp: " << last_ts << std::endl;
-                        free(DataArray);
-                        free(TempArray);                    
+                        std::cout << "Last time stamp: " << last_ts << std::endl;  
+                        // printf(" %3d events written to %s ",
+                        //     iEvt, outname);                                        
                         break; // We only break this loop after the entire file is read and parsed.
                     }
-                    free(DataArray);
-                    free(TempArray);
-                }                
+                    // free(DataArray);
+                    // free(TempArray);
+                    fflush(stdout);
+                }                   
             }
 
         //Printing statistics for each run if not in correlation mode
@@ -310,6 +325,8 @@ int main(int argc, char **argv)
     if (corr > 0)
         write_correlations();
 
+    free(DataArray);
+    free(TempArray);
     exit(0);
 
 } //end of main

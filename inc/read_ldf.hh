@@ -75,8 +75,10 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], LDF_file& ldf, DATA_buffer& data
     //std::cout << "Enter the maximum number of spills to parse (type 0 to read all): ";
     //std::cin >> max_num_spill;
     max_num_spill = 100;
-    if (max_num_spill != 0)
-        std::cout << "Maximum number of spills to read per cycle: " << max_num_spill << std::endl;
+    if (max_num_spill != 0) {
+        if (debug_mode)
+            std::cout << "Maximum number of spills to read per cycle: " << max_num_spill << std::endl;
+    }
     else
         std::cout << "No maximum number of spills specified, proceed to read all spills!" << std::endl;
     // Get length and rewind to read from beg
