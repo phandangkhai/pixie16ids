@@ -76,7 +76,7 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], LDF_file& ldf, DATA_buffer& data
     //std::cin >> max_num_spill;
     max_num_spill = 100;
     if (max_num_spill != 0)
-        std::cout << "Maximum number of spills: " << max_num_spill << std::endl;
+        std::cout << "Maximum number of spills to read per cycle: " << max_num_spill << std::endl;
     else
         std::cout << "No maximum number of spills specified, proceed to read all spills!" << std::endl;
     // Get length and rewind to read from beg
@@ -155,7 +155,6 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], LDF_file& ldf, DATA_buffer& data
     // data.Reset();
 
     while (true) {
-		auto t1 = std::chrono::high_resolution_clock::now();
         if (!data.Read(&binary_file, (char*)data_, nBytes, 1000000, full_spill, bad_spill, debug_mode)) {
             if (data.GetRetval() == 1) {
                 if (debug_mode) {
@@ -191,9 +190,7 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], LDF_file& ldf, DATA_buffer& data
             }
             continue;
         }
-		auto t_read = std::chrono::high_resolution_clock::now();
-		auto read_duration = std::chrono::duration_cast<std::chrono::microseconds>(t_read - t1).count();
-		std::cout << "Read() takes " << read_duration << std::endl;
+
         if (debug_mode) {
             status << "\033[0;32m" << " [READ] " << "\033[0m" << nBytes / 4 << " words ("
                 << 100 * binary_file.tellg() / file_length << "%), ";
@@ -211,9 +208,6 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], LDF_file& ldf, DATA_buffer& data
                 if (debug_mode)
                     std::cout << "Spill is full and good!" << std::endl;
                 unpacker_.ReadSpill(decodedList_, data_, nBytes / 4, is_verbose, debug_mode);
-				auto t_readspill = std::chrono::high_resolution_clock::now();
-				auto readspill_duration = std::chrono::duration_cast<std::chrono::microseconds>(t_readspill - t_read).count();
-				std::cout << "ReadSpill() takes " << readspill_duration << std::endl;
                 //IdleTask();
                 if (debug_mode)
                     std::cout << std::endl << std::endl;
@@ -232,9 +226,10 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], LDF_file& ldf, DATA_buffer& data
         }
         num_spills_recvd++;
         pos_index = binary_file.tellg();
-        std::cout << "Number of spills recorded (and parsed): " << num_spills_recvd << " spills" << std::endl;
+        if (debug_mode)
+            std::cout << "Number of spills recorded (and parsed): " << num_spills_recvd << " spills" << std::endl;
         if (num_spills_recvd == max_num_spill && max_num_spill != 0) {
-            // if (debug_mode)
+            if (debug_mode)
                 std::cout << "Limit of number of events to record = " << max_num_spill << " has been reached!" << std::endl;
             pos_index = binary_file.tellg();
             // pos_index -= ACTUAL_BUFF_SIZE*4;
@@ -246,16 +241,13 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], LDF_file& ldf, DATA_buffer& data
     delete[] data_;
 
     // Exporting decoded info to DataArray, and print a text file result.
-    auto t2 = std::chrono::high_resolution_clock::now();
     XiaData* decodedEvent;
     //ofstream myfile;
     //myfile.open("Parsing results.txt");
 
 	
     EventFilters filters(decodedList_, debug_mode, stats);
-    auto t_init = std::chrono::high_resolution_clock::now();
     filters.ApplyFilters(tmc);
-	auto t_loop = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < decodedList_.size(); i++) {
         decodedEvent = decodedList_[i];
         //if (i != 0) {
@@ -277,7 +269,6 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], LDF_file& ldf, DATA_buffer& data
         
 
     }
-	auto t_mid = std::chrono::high_resolution_clock::now();
     //myfile.close();
     for (i=0; i<decodedList_.size();i++){
         if (decodedList_[i])
@@ -285,16 +276,6 @@ int read_ldf(int tmc[MAX_NUM_MOD][MAX_NUM_CHN], LDF_file& ldf, DATA_buffer& data
     }
 
     binary_file.close();
-    auto t_text = std::chrono::high_resolution_clock::now();
-    
-    auto text_duration = std::chrono::duration_cast<std::chrono::microseconds>(t_mid - t2).count();
-    auto mid_duration = std::chrono::duration_cast<std::chrono::microseconds>(t_text - t_mid).count();
-    auto loop_duration = std::chrono::duration_cast<std::chrono::microseconds>(t_loop - t2).count();
-    std::cout << "Write text and assigning DataArray takes " << text_duration << std::endl;
-    std::cout << "Delete decodedList_ takes " << mid_duration << std::endl;
-    std::cout << "Init filters take " << std::chrono::duration_cast<std::chrono::microseconds>(t_init - t2).count() << std::endl;
-    std::cout << "Applyfilters takes " << std::chrono::duration_cast<std::chrono::microseconds>(t_loop - t_init).count() << std::endl ;
-    
                 
     return decodedList_.size();
 }

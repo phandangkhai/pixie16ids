@@ -13,7 +13,6 @@ https://github.com/rlica/nutaq4ids
 #include <stdint.h>
 #include <string.h>
 #include <math.h>
-#include <chrono>
 
 #include "TFile.h"
 #include "TTree.h"
@@ -183,7 +182,6 @@ int main(int argc, char **argv)
 
                 // Start of a cycle:
                 while (true) {
-				auto t1 = std::chrono::high_resolution_clock::now();
                 if (!first_cycle)
                     {
                         //Allocating memory
@@ -194,19 +192,15 @@ int main(int argc, char **argv)
                 // iData is now the last data index.
                     iData = read_ldf(tmc, ldf, data, ldf_pos_index);
 
-                ////}
                 //// Writing statistics
                 //if (stat == 1)
                 //{
                     //write_time();
                     //continue;
                 //}
-                auto t_read = std::chrono::high_resolution_clock::now();
-
+                
                 // Sorting the data chronologically.
                 MergeSort(DataArray, TempArray, 0, iData);
-
-				auto t_sort = std::chrono::high_resolution_clock::now();
 				
                 ////Looking for correlations
                 //if (corr > 0)
@@ -250,13 +244,6 @@ int main(int argc, char **argv)
                            iEvt / (current_block - prev_block + 1), totEvt, outname);
                     // write_time();
                 }
-                auto t_write_root = std::chrono::high_resolution_clock::now();
-                auto read_duration = std::chrono::duration_cast<std::chrono::microseconds>(t_read - t1).count();
-                auto sort_duration = std::chrono::duration_cast<std::chrono::microseconds>(t_sort - t_read).count();
-                auto root_duration = std::chrono::duration_cast<std::chrono::microseconds>(t_write_root - t_sort).count();
-                std::cout << "Read ldf takes " << read_duration << std::endl;
-                std::cout << "Merge sort takes " << sort_duration << std::endl;
-                std::cout << "Write root takes " << root_duration << std::endl;
 
                 printf("\n");
                 current_block = 0;

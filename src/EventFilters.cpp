@@ -28,7 +28,7 @@ void EventFilters::DetTypeCheck(int i) {
 		// 	std::cout << "Module number: " << decodedEvent->GetModuleNumber() << "; Channel Number: " << decodedEvent->GetChannelNumber();
 		// 	std::cout << "Dectector type: " << tmc[decodedEvent->GetModuleNumber()][decodedEvent->GetChannelNumber()] << std::endl;
 		// }
-		decodedList_.erase(decodedList_.begin() + i);
+		// decodedList_.erase(decodedList_.begin() + i);
 	}
 }
 
