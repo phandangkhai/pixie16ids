@@ -202,16 +202,16 @@ int main(int argc, char **argv)
 
                 // Start of a cycle:
                 while (true) {
-                    // if (!first_cycle)
-                    //     {
-                    //         //Allocating memory
-                    //         DataArray = (struct data *)calloc(memoryuse + 10000, sizeof(struct data));
-                    //         TempArray = (struct data *)calloc(memoryuse + 10000, sizeof(struct data));
-                    //     }
+                    if (!first_cycle || runpart != 0)
+                        {
+                            //Allocating memory
+                            DataArray = (struct data *)calloc(memoryuse + 10000, sizeof(struct data));
+                            TempArray = (struct data *)calloc(memoryuse + 10000, sizeof(struct data));
+                        }
                     // Begin to parse ldf fielname.
                     // iData is now the last data index.
-                    memset(DataArray,0,memoryuse + 10000);
-                    memset(TempArray,0,memoryuse + 10000);
+                    // memset(DataArray,0,memoryuse + 10000);
+                    // memset(TempArray,0,memoryuse + 10000);
                     memset(stats,0,sizeof(stats));
                     iData = read_ldf(tmc, ldf, data, ldf_pos_index);
         
@@ -295,12 +295,16 @@ int main(int argc, char **argv)
                         last_ts = DataArray[iData].time;
                         std::cout << std::endl;
                         std::cout << "First time stamp: " << first_ts << std::endl;
-                        std::cout << "Last time stamp: " << last_ts << std::endl;  
+                        std::cout << "Last time stamp: " << last_ts << std::endl;
+                        free(DataArray);
+                        free(TempArray);  
                         //Printing statistics for each run if not in correlation mode
                         if (corr == 0)
                             write_stats();                                 
                         break; // We only break this loop after the entire file is read and parsed.
                     }
+                    free(DataArray);
+                    free(TempArray);
 
                     fflush(stdout);
                 }                   
