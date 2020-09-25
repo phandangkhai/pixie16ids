@@ -13,6 +13,7 @@ https://github.com/rlica/nutaq4ids
 #include <stdint.h>
 #include <string.h>
 #include <math.h>
+#include <iomanip>
 
 #include "TFile.h"
 #include "TTree.h"
@@ -128,7 +129,8 @@ int main(int argc, char **argv)
                 define_root();
             }
         }
-
+        ofstream myfile;
+        myfile.open("DataArray.txt");
         if (rate == 1)
         { //Rate mode takes the input file as the second argument
             if (argc < 3)
@@ -169,7 +171,6 @@ int main(int argc, char **argv)
                 // write_time();
             }
         }
-
         // Format: normal mode (not rate mode).
         else
             for (runpart = 0; runpart < 2; runpart++)
@@ -241,7 +242,14 @@ int main(int argc, char **argv)
 
                     // Sorting the data chronologically.
                     MergeSort(DataArray, TempArray, 0, iData);
-                    
+
+                    for (int k = 0; k < iData; i++) {
+                        myfile  << std::setw(8) << std::fixed << DataArray[k].time
+                                << std::setw(8) << DataArray[k].energy
+                                << std::setw(8) << DataArray[k].modnum
+                                << std::setw(8) << DataArray[k].chnum
+                                << "\n";
+                    }                    
                     ////Looking for correlations
                     //if (corr > 0)
                     //{
@@ -310,9 +318,9 @@ int main(int argc, char **argv)
                 if (corr == 0) {
                     write_stats();
                     memset(stats, 0, sizeof(stats));
-                }                   
+                }                                   
             }
-
+        myfile.close();
         if (root == 1 && corr == 0)
         {
             // Write everything
