@@ -1,5 +1,5 @@
 runName    ./Run
-timegate   5000
+timegate   10000
 cs-tac     0
 pair-tac   0
 reftype    0
