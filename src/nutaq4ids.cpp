@@ -131,6 +131,12 @@ int main(int argc, char **argv)
         }
         ofstream myfile;
         myfile.open("DataArray.txt");
+        myfile  << "Time stamp"
+                << "\t  " << "Energy"
+                << "  " << "Module"
+                << "  " << "Channel"
+                << "\n\n";
+      
         if (rate == 1)
         { //Rate mode takes the input file as the second argument
             if (argc < 3)
@@ -243,7 +249,7 @@ int main(int argc, char **argv)
                     // Sorting the data chronologically.
                     MergeSort(DataArray, TempArray, 0, iData);
 
-                    for (int k = 0; k < iData; i++) {
+                    for (int k = 0; k < iData; k++) {
                         myfile  << std::setw(8) << std::fixed << DataArray[k].time
                                 << std::setw(8) << DataArray[k].energy
                                 << std::setw(8) << DataArray[k].modnum
