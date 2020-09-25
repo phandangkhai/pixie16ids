@@ -212,7 +212,7 @@ int main(int argc, char **argv)
                     // iData is now the last data index.
                     memset(DataArray,0,memoryuse + 10000);
                     memset(TempArray,0,memoryuse + 10000);
-                    memset(stats,0,3*MAX_NUM_MOD*MAX_NUM_CHN*sizeof(int));
+                    memset(stats,0,sizeof(stats));
                     iData = read_ldf(tmc, ldf, data, ldf_pos_index);
         
                     progress = float(ldf_pos_index) / float(file_length);
