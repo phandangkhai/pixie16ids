@@ -131,10 +131,10 @@ TFile *rootfile;
 TTree *tree;
 TH1F *hStats, *h[MAX_NUM_DETTYPES];
 
-int    E_branch[MAX_NUM_DETTYPES][MAX_NUM_DET],
-       T_branch[MAX_NUM_DETTYPES][MAX_NUM_DET],
-       M_branch[MAX_NUM_DETTYPES],
-    MULT_branch;
+int   E_branch[MAX_NUM_DETTYPES][MAX_NUM_DET],
+      T_branch[MAX_NUM_DETTYPES][MAX_NUM_DET],
+      M_branch[MAX_NUM_DETTYPES],
+      MULT_branch;
 ULong64_t  TIME_REF_branch;
 ULong64_t  TIME_RUN_branch;    
 char root_string[MAX_NUM_DETTYPES][100];

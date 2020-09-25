@@ -237,7 +237,15 @@ void event_builder_tree() {
     //~ }
 	  
     tree->Fill();
-        
+
+    memset(MULT_branch, 0, sizeof(MULT_branch));
+    memset(TIME_REF_branch, 0, sizeof(TIME_REF_branch));
+    memset(TIME_RUN_branch, 0, sizeof(TIME_RUN_branch));
+    memset(E_branch, 0, sizeof(E_branch));
+    memset(T_branch, 0, sizeof(T_branch));
+    memset(M_branch, 0, sizeof(M_branch));
+
+
     iEvt++;
     k+=m;
     
