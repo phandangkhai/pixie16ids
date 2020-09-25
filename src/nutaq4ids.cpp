@@ -212,7 +212,7 @@ int main(int argc, char **argv)
                     // iData is now the last data index.
                     // memset(DataArray,0,memoryuse + 10000);
                     // memset(TempArray,0,memoryuse + 10000);
-                    memset(stats,0,sizeof(stats));
+
                     iData = read_ldf(tmc, ldf, data, ldf_pos_index);
         
                     progress = float(ldf_pos_index) / float(file_length);
@@ -298,15 +298,18 @@ int main(int argc, char **argv)
                         std::cout << "Last time stamp: " << last_ts << std::endl;
                         free(DataArray);
                         free(TempArray);  
-                        //Printing statistics for each run if not in correlation mode
-                        if (corr == 0)
-                            write_stats();                                 
+                                 
                         break; // We only break this loop after the entire file is read and parsed.
                     }
                     free(DataArray);
                     free(TempArray);
 
                     fflush(stdout);
+                }
+                //Printing statistics for each run if not in correlation mode
+                if (corr == 0) {
+                    write_stats();
+                    memset(stats, 0, sizeof(stats));
                 }                   
             }
 
