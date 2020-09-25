@@ -129,9 +129,15 @@ int main(int argc, char **argv)
                 define_root();
             }
         }
-        ofstream myfile;
+        ofstream myfile,another;
         myfile.open("DataArray.txt");
+        another.open("Before.txt");
         myfile  << "Time stamp"
+                << "\t  " << "Energy"
+                << "  " << "Module"
+                << "  " << "Channel"
+                << "\n\n";
+                        another  << "Time stamp"
                 << "\t  " << "Energy"
                 << "  " << "Module"
                 << "  " << "Channel"
@@ -245,7 +251,13 @@ int main(int argc, char **argv)
                         //write_time();
                         //continue;
                     //}
-
+                    for (int k = 0; k < iData; k++) {
+                        another  << std::setw(8) << std::fixed << DataArray[k].time
+                                << std::setw(8) << DataArray[k].energy
+                                << std::setw(8) << DataArray[k].modnum
+                                << std::setw(8) << DataArray[k].chnum
+                                << "\n";
+                    } 
                     // Sorting the data chronologically.
                     MergeSort(DataArray, TempArray, 0, iData);
 
