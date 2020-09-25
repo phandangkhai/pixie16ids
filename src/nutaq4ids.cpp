@@ -326,8 +326,8 @@ int main(int argc, char **argv)
     if (corr > 0)
         write_correlations();
 
-    free(DataArray);
-    free(TempArray);
+    // free(DataArray);
+    // free(TempArray);
     exit(0);
 
 } //end of main
