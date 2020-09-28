@@ -191,12 +191,12 @@ int main(int argc, char **argv)
 
                 sprintf(filename, "%s%d_%d", runname, runnumber, runpart);
 
-                //fp_in = fopen(filename, "rb");
-                //if (!fp_in)
-                //{
-                    //fprintf(stderr, "Unable to open %s - %m\n", filename);
-                    //break;
-                //}
+                fp_in = fopen(filename, "rb");
+                if (!fp_in)
+                {
+                    fprintf(stderr, "Unable to open %s - %m\n", filename);
+                    break;
+                }
 
                 //Binary file object
                 LDF_file ldf(filename);
@@ -215,12 +215,6 @@ int main(int argc, char **argv)
 
                 // Start of a cycle:
                 while (true) {
-                    // if (!first_cycle || runpart != 0)
-                    //     {
-                    //         //Allocating memory
-                    //         DataArray = (struct data *)calloc(memoryuse + 10000, sizeof(struct data));
-                    //         TempArray = (struct data *)calloc(memoryuse + 10000, sizeof(struct data));
-                    //     }
                     // Begin to parse ldf fielname.
                     // iData is now the last data index.
                     memset(DataArray,0,memoryuse + 10000);
@@ -229,28 +223,9 @@ int main(int argc, char **argv)
                     iData = read_ldf(tmc, ldf, data, ldf_pos_index);
         
                     progress = float(ldf_pos_index) / float(file_length);
-  
-                    // std::cout << "[";
-                    // int pos = barWidth * progress;
-                    // for (int i = 0; i < barWidth; ++i) {
-                    //     if (i < pos) std::cout << "=";
-                    //     else if (i == pos) std::cout << ">";
-                    //     else std::cout << " ";
-                    // }
-                    // std::cout << "] " << int(progress * 100.0) << " %\r";
-                    // std::cout.flush();
 
                     printProgress(progress);
 
-            
-                    // std::cout << std::endl;
-
-                    //// Writing statistics
-                    //if (stat == 1)
-                    //{
-                        //write_time();
-                        //continue;
-                    //}
                     for (int k = 0; k < iData; k++) {
                         another  << std::setw(8) << std::fixed << DataArray[k].time
                                 << std::setw(8) << DataArray[k].energy
@@ -303,9 +278,7 @@ int main(int argc, char **argv)
                     if (root == 1)
                     {
                         event_builder_tree();
-                        //write_tree();
                         totEvt += iEvt;
-                        // write_time();
                         printf(" %3d events written to %s ",
                             iEvt, outname);
                     }
@@ -321,14 +294,10 @@ int main(int argc, char **argv)
                         last_ts = DataArray[iData].time;
                         std::cout << std::endl;
                         std::cout << "First time stamp: " << first_ts << std::endl;
-                        std::cout << "Last time stamp: " << last_ts << std::endl;
-                        // free(DataArray);
-                        // free(TempArray);  
+                        std::cout << "Last time stamp: " << last_ts << std::endl; 
                                  
                         break; // We only break this loop after the entire file is read and parsed.
                     }
-                    // free(DataArray);
-                    // free(TempArray);
 
                     fflush(stdout);
                 }
